@@ -1914,28 +1914,30 @@ body * { cursor: none !important; }
     50% { opacity: 0.8; }
 }
 
-/* 4. Hearts float up */
-.fwd-hearts text { opacity: 0; }
-.slide.active .fwd-hearts text {
-    animation: fwdHeartFloat 2.5s ease-in-out infinite;
+/* 4. Crescent + lantern draw */
+.fwd-crescent {
+    stroke-dasharray: 140;
+    stroke-dashoffset: 140;
 }
-.slide.active .fwd-hearts text:nth-child(1) { animation-delay: 0.6s; }
-.slide.active .fwd-hearts text:nth-child(2) { animation-delay: 1.4s; }
-.slide.active .fwd-hearts text:nth-child(3) { animation-delay: 2.0s; }
-@keyframes fwdHeartFloat {
-    0% { opacity: 0; transform: translateY(0); }
-    20% { opacity: 0.9; }
-    100% { opacity: 0; transform: translateY(-16px); }
-}
-/* Phone draw */
-.fwd-phone {
-    stroke-dasharray: 170;
-    stroke-dashoffset: 170;
-}
-.slide.active .fwd-phone {
+.slide.active .fwd-crescent {
     animation: fwdPhoneDraw 1.4s 0.4s ease-out forwards;
 }
-@keyframes fwdPhoneDraw { to { stroke-dashoffset: 0; } }
+.fwd-star { opacity: 0; }
+.slide.active .fwd-star {
+    animation: fwdStarIn 0.6s 1s ease-out forwards;
+}
+@keyframes fwdStarIn {
+    0% { opacity: 0; transform: scale(0) rotate(-30deg); }
+    100% { opacity: 0.7; transform: scale(1) rotate(0deg); }
+}
+.fwd-lantern {
+    stroke-dasharray: 70;
+    stroke-dashoffset: 70;
+}
+.slide.active .fwd-lantern {
+    animation: fwdLanternDraw 1s 0.6s ease-out forwards;
+}
+@keyframes fwdLanternDraw { to { stroke-dashoffset: 0; } }
 
 /* 5. Checkmark draw */
 .fwd-checkmark {
