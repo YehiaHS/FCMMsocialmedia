@@ -1671,19 +1671,85 @@ body * { cursor: none !important; }
 }
 
 /* ===== END SLIDE ===== */
-.end-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 6vw, 4rem);
+/* ===== HANDWRITE ANIMATION (Slide 9) ===== */
+.hw-outer { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+
+.hw-wrap {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+}
+
+.hw-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(3.8rem, 9vw, 6.5rem);
     font-weight: 700;
-    color: #fff;
-    letter-spacing: 6px;
-    margin-bottom: 2rem;
-    background: linear-gradient(90deg, #fff 0%, var(--pp-accent) 50%, #fff 100%);
+    white-space: nowrap;
+    display: block;
+    background: linear-gradient(90deg, #fff 0%, var(--pp-accent) 55%, #fff 100%);
     background-size: 200% 100%;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
     animation: shimmer 4s ease-in-out infinite;
+    /* Hidden by clipping from the right by default */
+    clip-path: inset(0 100% -20% 0);
+    transition: clip-path 2.5s cubic-bezier(0.22, 0.6, 0.36, 1) 0.35s;
+}
+
+/* Instantly reset to hidden when slide is not active */
+.slide:not(.active) .hw-text {
+    clip-path: inset(0 100% -20% 0);
+    transition: none;
+}
+
+/* Reveal on active */
+.slide.active .hw-text {
+    clip-path: inset(0 -5% -20% 0);
+}
+
+/* Pen cursor that rides the leading edge of the reveal */
+.hw-pen {
+    position: absolute;
+    top: 14%;
+    left: 0%;
+    opacity: 0;
+    font-size: 1.1rem;
+    color: var(--pp-accent);
+    transform: rotate(-35deg);
+    pointer-events: none;
+    filter: drop-shadow(0 0 8px rgba(0, 164, 255, 0.8));
+    transition: none;
+}
+
+.slide:not(.active) .hw-pen {
+    left: 0%;
+    opacity: 0;
+    transition: none;
+    animation: none;
+}
+
+.slide.active .hw-pen {
+    animation: penWrite 2.5s cubic-bezier(0.22, 0.6, 0.36, 1) 0.35s forwards;
+}
+
+@keyframes penWrite {
+    0%   { left: 0%;    opacity: 1; }
+    15%  { left: 15%;   opacity: 1; }
+    50%  { left: 55%;   opacity: 1; }
+    85%  { left: 90%;   opacity: 1; }
+    95%  { left: 100%;  opacity: 1; }
+    100% { left: 101%;  opacity: 0; }
+}
+
+/* Ink-drop glow that follows the pen */
+.hw-pen i {
+    display: block;
+    animation: penGlow 0.4s ease-in-out infinite alternate;
+}
+@keyframes penGlow {
+    from { filter: drop-shadow(0 0 4px rgba(0,164,255,0.5)); }
+    to   { filter: drop-shadow(0 0 14px rgba(0,164,255,1)); }
 }
 .end-links {
     display: flex;
