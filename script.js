@@ -771,6 +771,34 @@
         setupEvents();
         updateTimeline();
         updateTimecode();
+        initReelCarousel();
     });
+
+    /* ==================================================================
+       REEL CAROUSEL
+       ================================================================== */
+    function initReelCarousel() {
+        var track = document.getElementById('reelTrack');
+        var prevBtn = document.getElementById('reelPrev');
+        var nextBtn = document.getElementById('reelNext');
+        var dots = document.querySelectorAll('.reel-dot');
+        if (!track) return;
+        var total = track.children.length;
+        var idx = 0;
+
+        function goTo(n) {
+            idx = (n + total) % total;
+            track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+            dots.forEach(function (d, i) {
+                d.classList.toggle('active', i === idx);
+            });
+        }
+
+        prevBtn && prevBtn.addEventListener('click', function () { goTo(idx - 1); });
+        nextBtn && nextBtn.addEventListener('click', function () { goTo(idx + 1); });
+        dots.forEach(function (d) {
+            d.addEventListener('click', function () { goTo(parseInt(d.getAttribute('data-reel'))); });
+        });
+    }
 
 })();

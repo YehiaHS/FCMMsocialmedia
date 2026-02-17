@@ -965,6 +965,99 @@ body * { cursor: none !important; }
 }
 .upload-zone p { font-size: 0.85rem; }
 
+/* ===== VIDEO EMBED ===== */
+.video-embed-zone {
+    width: 100%;
+    max-width: 560px;
+    margin: 0.5rem auto 1.5rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    border: 1.5px solid rgba(0, 164, 255, 0.25);
+    box-shadow: 0 0 30px rgba(0, 164, 255, 0.1);
+    background: #000;
+}
+.video-embed-zone iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    transform: scale(1);
+}
+
+/* ===== REEL CAROUSEL ===== */
+.reel-carousel-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    justify-content: center;
+    margin: 0.5rem auto 0.75rem;
+    max-width: 560px;
+}
+.reel-carousel-window {
+    flex: 1;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    border: 1.5px solid rgba(0, 164, 255, 0.25);
+    box-shadow: 0 0 30px rgba(0, 164, 255, 0.1);
+    background: #000;
+    position: relative;
+}
+.reel-carousel-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.45s cubic-bezier(0.77, 0, 0.18, 1);
+}
+.reel-carousel-item {
+    min-width: 100%;
+    height: 100%;
+}
+.reel-carousel-item iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+.reel-carousel-btn {
+    background: rgba(0,164,255,0.12);
+    border: 1px solid rgba(0,164,255,0.3);
+    color: var(--pp-accent);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, box-shadow 0.2s;
+    font-size: 0.8rem;
+}
+.reel-carousel-btn:hover {
+    background: rgba(0,164,255,0.25);
+    box-shadow: 0 0 12px rgba(0,164,255,0.3);
+}
+.reel-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.reel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0,164,255,0.25);
+    cursor: pointer;
+    transition: background 0.25s, transform 0.25s;
+}
+.reel-dot.active {
+    background: var(--pp-accent);
+    transform: scale(1.3);
+}
+
 /* ===== TECH TAGS ===== */
 .tech-tags {
     display: flex;
