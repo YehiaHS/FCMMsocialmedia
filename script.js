@@ -371,11 +371,20 @@
 
         /* Bring in the new slide */
         setTimeout(function () {
-            /* Clean outgoing classes */
+            /* Clean outgoing classes — clear ALL inline styles so CSS classes take over again */
             prevSlide.classList.remove('drag-out-left', 'drag-out-right');
-            prevSlide.style.opacity = '0';
+            prevSlide.style.opacity = '';
             prevSlide.style.transform = '';
             prevSlide.style.filter = '';
+            /* Reset outgoing anim-el delays so they don't bleed into future visits */
+            $$('.anim-el', prevSlide).forEach(function (el) {
+                el.style.transitionDelay = '0ms';
+            });
+
+            /* Clear any stale inline styles on the incoming slide */
+            nextSlide.style.opacity = '';
+            nextSlide.style.transform = '';
+            nextSlide.style.filter = '';
 
             /* Set entry delays on anim elements */
             $$('.anim-el', nextSlide).forEach(function (el, i) {
