@@ -1721,67 +1721,16 @@ body * { cursor: none !important; }
     opacity: 0;
     transition: none;
 }
-.slide:not(.active) .hw-pen {
-    left: 0%;
+
+/* When active: keep solid text hidden, only SVG stroke shows */
+.slide.active .hw-text {
     opacity: 0;
-    transition: none;
-    animation: none;
 }
 
-/* When active: draw stroke then fill */
+/* When active: draw stroke */
 .slide.active .hw-svg text {
     stroke-dashoffset: 0;
     transition: stroke-dashoffset 2.2s cubic-bezier(0.37, 0, 0.63, 1) 0.3s;
-}
-.slide.active .hw-text {
-    opacity: 0;
-    animation: hwFill 0.6s ease forwards 2.4s;
-}
-@keyframes hwFill {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-/* Pen nib — positioned at bottom-right of the text, tracking via animation */
-.hw-pen {
-    position: absolute;
-    bottom: 18%;
-    left: -2%;
-    opacity: 0;
-    font-size: 1.3rem;
-    color: var(--pp-accent);
-    transform: rotate(-35deg) translate(0, 0);
-    pointer-events: none;
-    filter: drop-shadow(0 0 8px rgba(0, 164, 255, 0.8));
-    transition: none;
-    z-index: 5;
-}
-
-.slide.active .hw-pen {
-    animation: penTrack 2.2s cubic-bezier(0.37, 0, 0.63, 1) 0.3s forwards;
-}
-
-@keyframes penTrack {
-    0%   { left: -2%;  bottom: 40%; opacity: 1; transform: rotate(-35deg); }
-    8%   { left: 8%;   bottom: 30%; }
-    18%  { left: 20%;  bottom: 35%; }
-    30%  { left: 34%;  bottom: 25%; }
-    42%  { left: 48%;  bottom: 30%; }
-    55%  { left: 60%;  bottom: 22%; }
-    68%  { left: 72%;  bottom: 28%; }
-    80%  { left: 84%;  bottom: 20%; }
-    92%  { left: 94%;  bottom: 25%; opacity: 1; }
-    100% { left: 102%; bottom: 30%; opacity: 0; }
-}
-
-/* Ink glow */
-.hw-pen i {
-    display: block;
-    animation: penGlow 0.4s ease-in-out infinite alternate;
-}
-@keyframes penGlow {
-    from { filter: drop-shadow(0 0 4px rgba(0,164,255,0.5)); }
-    to   { filter: drop-shadow(0 0 14px rgba(0,164,255,1)); }
 }
 .end-links {
     display: flex;
