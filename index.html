@@ -364,10 +364,103 @@
                             <div class="slide-content">
                                 <div class="anim-el"><span class="section-tag">08 — LOOKING FORWARD</span></div>
                                 <div class="anim-el">
-                                    <div class="next-items">
-                                        <div class="next-item"><span class="next-arrow">→</span><span>Advanced colour grading &amp; motion graphics</span></div>
-                                        <div class="next-item"><span class="next-arrow">→</span><span>Building a freelance editing portfolio</span></div>
-                                        <div class="next-item"><span class="next-arrow">→</span><span>Merging data analytics with creative production</span></div>
+                                    <div class="fwd-grid">
+
+                                        <!-- 1. Colour grading & motion graphics -->
+                                        <div class="fwd-card" style="--fwd-i:0">
+                                            <div class="fwd-icon-wrap">
+                                                <svg class="fwd-svg" viewBox="0 0 64 64" fill="none">
+                                                    <!-- Colour wheel -->
+                                                    <circle cx="32" cy="32" r="22" stroke="url(#cg1)" stroke-width="4" class="fwd-ring"/>
+                                                    <circle cx="32" cy="20" r="5" fill="#e74c3c" class="fwd-dot fwd-dot-1"/>
+                                                    <circle cx="42" cy="38" r="5" fill="#2ecc71" class="fwd-dot fwd-dot-2"/>
+                                                    <circle cx="22" cy="38" r="5" fill="#3498db" class="fwd-dot fwd-dot-3"/>
+                                                    <!-- Motion path -->
+                                                    <path d="M12 52 Q20 44 28 52 Q36 60 44 52 Q52 44 56 52" stroke="var(--pp-accent)" stroke-width="1.8" stroke-linecap="round" class="fwd-wave"/>
+                                                    <defs><linearGradient id="cg1" x1="0" y1="0" x2="64" y2="64"><stop offset="0%" stop-color="#e74c3c"/><stop offset="50%" stop-color="#2ecc71"/><stop offset="100%" stop-color="#3498db"/></linearGradient></defs>
+                                                </svg>
+                                            </div>
+                                            <span class="fwd-label">Advanced colour grading &amp; motion graphics</span>
+                                        </div>
+
+                                        <!-- 2. Freelance portfolio -->
+                                        <div class="fwd-card" style="--fwd-i:1">
+                                            <div class="fwd-icon-wrap">
+                                                <svg class="fwd-svg" viewBox="0 0 64 64" fill="none">
+                                                    <!-- Briefcase -->
+                                                    <rect x="10" y="24" width="44" height="28" rx="4" stroke="var(--pp-accent)" stroke-width="2.2" class="fwd-case"/>
+                                                    <path d="M24 24V18a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v6" stroke="var(--pp-accent)" stroke-width="2" stroke-linecap="round"/>
+                                                    <!-- Film strip inside -->
+                                                    <rect x="20" y="32" width="24" height="12" rx="2" fill="rgba(0,164,255,0.12)" stroke="var(--pp-accent)" stroke-width="1.2"/>
+                                                    <line x1="28" y1="32" x2="28" y2="44" stroke="var(--pp-accent)" stroke-width="0.8" opacity="0.5"/>
+                                                    <line x1="36" y1="32" x2="36" y2="44" stroke="var(--pp-accent)" stroke-width="0.8" opacity="0.5"/>
+                                                    <circle cx="32" cy="38" r="3" fill="var(--pp-accent)" opacity="0.35" class="fwd-pulse"/>
+                                                </svg>
+                                            </div>
+                                            <span class="fwd-label">Building a freelance editing portfolio</span>
+                                        </div>
+
+                                        <!-- 3. Analytics + creative -->
+                                        <div class="fwd-card" style="--fwd-i:2">
+                                            <div class="fwd-icon-wrap">
+                                                <svg class="fwd-svg" viewBox="0 0 64 64" fill="none">
+                                                    <!-- Bar chart -->
+                                                    <rect x="12" y="36" width="8" height="18" rx="2" fill="rgba(168,85,247,0.25)" stroke="#a855f7" stroke-width="1.5" class="fwd-bar fwd-bar-1"/>
+                                                    <rect x="24" y="26" width="8" height="28" rx="2" fill="rgba(168,85,247,0.25)" stroke="#a855f7" stroke-width="1.5" class="fwd-bar fwd-bar-2"/>
+                                                    <rect x="36" y="18" width="8" height="36" rx="2" fill="rgba(168,85,247,0.25)" stroke="#a855f7" stroke-width="1.5" class="fwd-bar fwd-bar-3"/>
+                                                    <!-- Lightbulb (creative) -->
+                                                    <circle cx="52" cy="20" r="8" stroke="#f59e0b" stroke-width="1.8" fill="rgba(245,158,11,0.1)" class="fwd-bulb"/>
+                                                    <line x1="52" y1="28" x2="52" y2="34" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+                                                    <line x1="49" y1="32" x2="55" y2="32" stroke="#f59e0b" stroke-width="1" stroke-linecap="round"/>
+                                                    <!-- Spark lines -->
+                                                    <line x1="52" y1="10" x2="52" y2="7" stroke="#f59e0b" stroke-width="1" class="fwd-spark"/>
+                                                    <line x1="59" y1="14" x2="61" y2="12" stroke="#f59e0b" stroke-width="1" class="fwd-spark"/>
+                                                    <line x1="45" y1="14" x2="43" y2="12" stroke="#f59e0b" stroke-width="1" class="fwd-spark"/>
+                                                </svg>
+                                            </div>
+                                            <span class="fwd-label">Merging data analytics with creative production</span>
+                                        </div>
+
+                                        <!-- 4. Auto-model relatable content -->
+                                        <div class="fwd-card" style="--fwd-i:3">
+                                            <div class="fwd-icon-wrap">
+                                                <svg class="fwd-svg" viewBox="0 0 64 64" fill="none">
+                                                    <!-- Phone frame -->
+                                                    <rect x="18" y="6" width="28" height="52" rx="5" stroke="var(--pp-accent)" stroke-width="2" class="fwd-phone"/>
+                                                    <line x1="28" y1="10" x2="36" y2="10" stroke="var(--pp-accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+                                                    <!-- Person silhouette -->
+                                                    <circle cx="32" cy="28" r="6" fill="rgba(0,164,255,0.18)" stroke="var(--pp-accent)" stroke-width="1.2"/>
+                                                    <path d="M22 48 Q22 38 32 38 Q42 38 42 48" fill="rgba(0,164,255,0.12)" stroke="var(--pp-accent)" stroke-width="1.2"/>
+                                                    <!-- Heart reactions -->
+                                                    <g class="fwd-hearts">
+                                                        <text x="48" y="22" font-size="10" fill="#e74c3c" opacity="0.8">♥</text>
+                                                        <text x="50" y="34" font-size="7" fill="#e74c3c" opacity="0.5">♥</text>
+                                                        <text x="46" y="44" font-size="8" fill="#e74c3c" opacity="0.6">♥</text>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                            <span class="fwd-label">Creating auto-model content that is relatable</span>
+                                        </div>
+
+                                        <!-- 5. Exam content -->
+                                        <div class="fwd-card" style="--fwd-i:4">
+                                            <div class="fwd-icon-wrap">
+                                                <svg class="fwd-svg" viewBox="0 0 64 64" fill="none">
+                                                    <!-- Book / page -->
+                                                    <path d="M12 12 Q12 8 16 8 L48 8 Q52 8 52 12 L52 52 Q52 56 48 56 L16 56 Q12 56 12 52Z" stroke="#10b981" stroke-width="2" fill="rgba(16,185,129,0.08)" class="fwd-book"/>
+                                                    <line x1="20" y1="18" x2="44" y2="18" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                                                    <line x1="20" y1="24" x2="38" y2="24" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+                                                    <line x1="20" y1="30" x2="42" y2="30" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+                                                    <!-- Checkmark -->
+                                                    <circle cx="44" cy="44" r="9" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.8" class="fwd-check-circle"/>
+                                                    <path d="M39 44 L42.5 47.5 L49 40" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="fwd-checkmark"/>
+                                                    <!-- Laugh emoji -->
+                                                    <text x="6" y="48" font-size="11" class="fwd-emoji">😂</text>
+                                                </svg>
+                                            </div>
+                                            <span class="fwd-label">Exam content that students actually relate to</span>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

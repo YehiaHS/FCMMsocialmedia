@@ -1784,41 +1784,177 @@ body * { cursor: none !important; }
 .tarot-hint i { margin-right: 5px; }
 
 /* ===== NEXT ITEMS ===== */
-.next-items {
-    display: flex;
-    flex-direction: column;
+/* ===== FORWARD CARDS (Slide 8) ===== */
+.fwd-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    max-width: 500px;
+    max-width: 700px;
     margin: 0 auto;
 }
-.next-item {
+/* Last two cards center in their row */
+.fwd-card:nth-child(4) { grid-column: 1 / 2; justify-self: end; }
+.fwd-card:nth-child(5) { grid-column: 2 / 4; justify-self: start; }
+
+.fwd-card {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    text-align: left;
-    padding: 1rem 1.5rem;
+    gap: 0.65rem;
+    padding: 1rem 0.8rem;
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: var(--radius-md);
-    transition: all 0.4s var(--ease-smooth);
+    transition: all 0.45s var(--ease-smooth);
+    /* Staggered entrance */
+    opacity: 0;
+    transform: translateY(24px);
 }
-.next-item:hover {
+.slide.active .fwd-card {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(var(--fwd-i) * 0.12s + 0.2s);
+}
+.fwd-card:hover {
     background: rgba(255,255,255,0.05);
-    border-color: rgba(0, 164, 255, 0.15);
-    transform: translateX(8px);
-    box-shadow: -4px 0 20px rgba(0, 164, 255, 0.08);
+    border-color: rgba(0, 164, 255, 0.2);
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 28px rgba(0, 164, 255, 0.08);
 }
-.next-arrow {
-    font-size: 1.3rem;
-    color: var(--pp-accent);
-    font-weight: 700;
+
+.fwd-icon-wrap {
+    width: 64px;
+    height: 64px;
     flex-shrink: 0;
-    transition: transform 0.3s var(--ease-bounce);
 }
-.next-item:hover .next-arrow { transform: translateX(4px); }
-.next-item span:last-child {
-    font-size: 0.9rem;
+.fwd-svg { width: 100%; height: 100%; }
+
+.fwd-label {
+    font-size: 0.78rem;
     color: var(--pp-text);
+    text-align: center;
+    line-height: 1.45;
+}
+
+/* === SVG Animations === */
+
+/* 1. Colour wheel ring rotation */
+.fwd-ring {
+    stroke-dasharray: 138;
+    stroke-dashoffset: 138;
+    transform-origin: center;
+}
+.slide.active .fwd-ring {
+    animation: fwdRingDraw 1.6s 0.4s ease-out forwards, fwdRingSpin 12s 2s linear infinite;
+}
+@keyframes fwdRingDraw {
+    to { stroke-dashoffset: 0; }
+}
+@keyframes fwdRingSpin {
+    to { transform: rotate(360deg); }
+}
+/* Colour dots pulse */
+.fwd-dot { opacity: 0; }
+.slide.active .fwd-dot { animation: fwdDotIn 0.5s ease-out forwards; }
+.slide.active .fwd-dot-1 { animation-delay: 0.8s; }
+.slide.active .fwd-dot-2 { animation-delay: 1.0s; }
+.slide.active .fwd-dot-3 { animation-delay: 1.2s; }
+@keyframes fwdDotIn {
+    0% { opacity: 0; transform: scale(0); }
+    100% { opacity: 1; transform: scale(1); }
+}
+/* Motion wave draw */
+.fwd-wave {
+    stroke-dasharray: 80;
+    stroke-dashoffset: 80;
+}
+.slide.active .fwd-wave {
+    animation: fwdWaveDraw 1.4s 1.4s ease-out forwards;
+}
+@keyframes fwdWaveDraw { to { stroke-dashoffset: 0; } }
+
+/* 2. Briefcase pulse */
+.fwd-case {
+    stroke-dasharray: 160;
+    stroke-dashoffset: 160;
+}
+.slide.active .fwd-case {
+    animation: fwdCaseDraw 1.2s 0.5s ease-out forwards;
+}
+@keyframes fwdCaseDraw { to { stroke-dashoffset: 0; } }
+.fwd-pulse { animation: fwdPulse 2s ease-in-out infinite; }
+@keyframes fwdPulse {
+    0%, 100% { opacity: 0.2; r: 3; }
+    50% { opacity: 0.6; r: 4.5; }
+}
+
+/* 3. Bar chart grow */
+.fwd-bar { transform-origin: bottom; transform: scaleY(0); }
+.slide.active .fwd-bar { animation: fwdBarGrow 0.8s ease-out forwards; }
+.slide.active .fwd-bar-1 { animation-delay: 0.5s; }
+.slide.active .fwd-bar-2 { animation-delay: 0.7s; }
+.slide.active .fwd-bar-3 { animation-delay: 0.9s; }
+@keyframes fwdBarGrow {
+    0% { transform: scaleY(0); opacity: 0; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
+/* Bulb glow */
+.fwd-bulb { opacity: 0; }
+.slide.active .fwd-bulb { animation: fwdBulbOn 0.6s 1.1s ease-out forwards; }
+@keyframes fwdBulbOn {
+    0% { opacity: 0; filter: drop-shadow(0 0 0 transparent); }
+    100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(245,158,11,0.4)); }
+}
+.fwd-spark { opacity: 0; }
+.slide.active .fwd-spark {
+    animation: fwdSpark 1.6s 1.3s ease-in-out infinite;
+}
+@keyframes fwdSpark {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.8; }
+}
+
+/* 4. Hearts float up */
+.fwd-hearts text { opacity: 0; }
+.slide.active .fwd-hearts text {
+    animation: fwdHeartFloat 2.5s ease-in-out infinite;
+}
+.slide.active .fwd-hearts text:nth-child(1) { animation-delay: 0.6s; }
+.slide.active .fwd-hearts text:nth-child(2) { animation-delay: 1.4s; }
+.slide.active .fwd-hearts text:nth-child(3) { animation-delay: 2.0s; }
+@keyframes fwdHeartFloat {
+    0% { opacity: 0; transform: translateY(0); }
+    20% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-16px); }
+}
+/* Phone draw */
+.fwd-phone {
+    stroke-dasharray: 170;
+    stroke-dashoffset: 170;
+}
+.slide.active .fwd-phone {
+    animation: fwdPhoneDraw 1.4s 0.4s ease-out forwards;
+}
+@keyframes fwdPhoneDraw { to { stroke-dashoffset: 0; } }
+
+/* 5. Checkmark draw */
+.fwd-checkmark {
+    stroke-dasharray: 22;
+    stroke-dashoffset: 22;
+}
+.slide.active .fwd-checkmark {
+    animation: fwdCheckDraw 0.6s 1s ease-out forwards;
+}
+@keyframes fwdCheckDraw { to { stroke-dashoffset: 0; } }
+.fwd-check-circle { opacity: 0; }
+.slide.active .fwd-check-circle { animation: fwdDotIn 0.5s 0.7s ease-out forwards; }
+/* Emoji bounce */
+.fwd-emoji { opacity: 0; }
+.slide.active .fwd-emoji { animation: fwdEmojiBounce 0.7s 1.2s ease-out forwards; }
+@keyframes fwdEmojiBounce {
+    0% { opacity: 0; transform: scale(0) rotate(-20deg); }
+    60% { opacity: 1; transform: scale(1.3) rotate(5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 
 /* ===== END SLIDE ===== */
@@ -1940,6 +2076,9 @@ body * { cursor: none !important; }
     .upload-zone { padding: 2rem 1.5rem; }
     .skill-grid { gap: 0.7rem; }
     .skill-card { padding: 0.9rem 1rem; }
+    .fwd-grid { gap: 0.6rem; }
+    .fwd-icon-wrap { width: 48px; height: 48px; }
+    .fwd-label { font-size: 0.68rem; }
 }
 @media (max-width: 768px) {
     .project-cards { grid-template-columns: 1fr; max-width: 280px; }
@@ -1947,6 +2086,9 @@ body * { cursor: none !important; }
     .pipeline-flow { flex-wrap: wrap; }
     .stats-row { flex-wrap: wrap; gap: 1.5rem; }
     .reflection-points { flex-direction: column; }
+    .fwd-grid { grid-template-columns: repeat(2, 1fr); }
+    .fwd-card:nth-child(4) { grid-column: auto; justify-self: auto; }
+    .fwd-card:nth-child(5) { grid-column: auto; justify-self: auto; }
     .menu-item { display: none; }
     .ws-tab { display: none; }
     .ws-tab.active { display: block; }
