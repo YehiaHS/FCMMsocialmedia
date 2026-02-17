@@ -1,0 +1,776 @@
+(function () {
+    'use strict';
+
+    /* ==================================================================
+       CONFIGURATION
+       ================================================================== */
+    var TOTAL = 10;
+    var TRANSITION_MS = 750;
+    var CLIP_COLORS = [
+        '#7b61ff', '#3a86ff', '#00b4d8', '#2ecc71', '#e91e63',
+        '#ff9f1c', '#8338ec', '#3a86ff', '#00b4d8', '#00a4ff'
+    ];
+    var CLIP_LABELS = [
+        'Title', 'Role', 'Portfolio', 'Open Day', 'TikTok',
+        'Pipeline', 'Reflect', 'Skills', 'Forward', 'End'
+    ];
+
+    var current = 0;
+    var transitioning = false;
+    var autoPlaying = false;
+    var autoTimer = null;
+    var mouseX = window.innerWidth / 2;
+    var mouseY = window.innerHeight / 2;
+
+    /* ==================================================================
+       DOM HELPERS
+       ================================================================== */
+    function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+    function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+
+    var slides, viewport, playheadEl, timecodeEl, currentNumEl;
+    var fakeCursor, cursorRing;
+    var particleCanvas, pCtx;
+    var viewportGlow;
+
+    /* ==================================================================
+       CUSTOM CURSOR
+       ================================================================== */
+    function initCursor() {
+        fakeCursor = $('#fakeCursor');
+        cursorRing = $('#cursorRing');
+        if (!fakeCursor) return;
+
+        /* Follow mouse smoothly */
+        document.addEventListener('mousemove', function (e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        /* Smooth interpolation */
+        var cx = mouseX, cy = mouseY;
+        (function trackCursor() {
+            cx += (mouseX - cx) * 0.18;
+            cy += (mouseY - cy) * 0.18;
+            if (!fakeCursor.classList.contains('auto-moving')) {
+                fakeCursor.style.transform = 'translate(' + cx + 'px,' + cy + 'px)';
+            }
+            requestAnimationFrame(trackCursor);
+        })();
+
+        /* Click effect */
+        document.addEventListener('mousedown', function () {
+            fakeCursor.classList.add('clicking');
+        });
+        document.addEventListener('mouseup', function () {
+            setTimeout(function () { fakeCursor.classList.remove('clicking'); }, 250);
+        });
+    }
+
+    /**
+     * Animate cursor to a target element's center, do a click effect,
+     * then return to mouse position.
+     */
+    function animateCursorToClip(targetEl, callback) {
+        if (!fakeCursor || !targetEl) { if (callback) callback(); return; }
+        var rect = targetEl.getBoundingClientRect();
+        var tx = rect.left + rect.width / 2;
+        var ty = rect.top + rect.height / 2;
+
+        fakeCursor.classList.add('auto-moving');
+        fakeCursor.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
+
+        setTimeout(function () {
+            /* Click flash */
+            fakeCursor.classList.add('clicking');
+
+            setTimeout(function () {
+                fakeCursor.classList.remove('clicking');
+                if (callback) callback();
+
+                /* Return to user mouse pos */
+                setTimeout(function () {
+                    fakeCursor.style.transform = 'translate(' + mouseX + 'px,' + mouseY + 'px)';
+                    setTimeout(function () {
+                        fakeCursor.classList.remove('auto-moving');
+                    }, 400);
+                }, 200);
+            }, 300);
+        }, 500);
+    }
+
+    /* ==================================================================
+       PARTICLE BURST SYSTEM
+       ================================================================== */
+    var particles = [];
+
+    function initParticles() {
+        particleCanvas = $('#particle-burst');
+        if (!particleCanvas) return;
+        pCtx = particleCanvas.getContext('2d');
+        resizeParticleCanvas();
+        window.addEventListener('resize', resizeParticleCanvas);
+        renderParticles();
+    }
+
+    function resizeParticleCanvas() {
+        if (!particleCanvas) return;
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        particleCanvas.width = window.innerWidth * dpr;
+        particleCanvas.height = window.innerHeight * dpr;
+        particleCanvas.style.width = window.innerWidth + 'px';
+        particleCanvas.style.height = window.innerHeight + 'px';
+        if (pCtx) pCtx.scale(dpr, dpr);
+    }
+
+    function emitBurst(cx, cy, color, count) {
+        count = count || 35;
+        for (var i = 0; i < count; i++) {
+            var angle = Math.random() * Math.PI * 2;
+            var speed = Math.random() * 5 + 2;
+            var size = Math.random() * 3 + 1;
+            particles.push({
+                x: cx, y: cy,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 1,
+                decay: Math.random() * 0.025 + 0.015,
+                size: size,
+                color: color || 'rgba(0,164,255,1)'
+            });
+        }
+    }
+
+    function renderParticles() {
+        if (!pCtx) { requestAnimationFrame(renderParticles); return; }
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        pCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        pCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+        for (var i = particles.length - 1; i >= 0; i--) {
+            var p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vx *= 0.97;
+            p.vy *= 0.97;
+            p.vy += 0.06;
+            p.life -= p.decay;
+
+            if (p.life <= 0) {
+                particles.splice(i, 1);
+                continue;
+            }
+
+            pCtx.globalAlpha = p.life;
+            pCtx.fillStyle = p.color;
+            pCtx.beginPath();
+            pCtx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+            pCtx.fill();
+
+            /* Trail */
+            pCtx.globalAlpha = p.life * 0.3;
+            pCtx.beginPath();
+            pCtx.arc(p.x - p.vx * 2, p.y - p.vy * 2, p.size * p.life * 0.6, 0, Math.PI * 2);
+            pCtx.fill();
+        }
+        pCtx.globalAlpha = 1;
+        requestAnimationFrame(renderParticles);
+    }
+
+    /* ==================================================================
+       WEBGL BACKGROUND
+       ================================================================== */
+    var glCanvas = document.getElementById('webgl-bg');
+    var gl, glProg, uTime, uRes, uSlide;
+
+    var VERT_SRC = 'attribute vec2 a_pos;void main(){gl_Position=vec4(a_pos,0.,1.);}';
+
+    var FRAG_SRC = [
+        'precision mediump float;',
+        'uniform float u_time;',
+        'uniform vec2 u_res;',
+        'uniform float u_slide;',
+        '',
+        'vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}',
+        'vec2 mod289(vec2 x){return x-floor(x*(1./289.))*289.;}',
+        'vec3 permute(vec3 x){return mod289(((x*34.)+1.)*x);}',
+        'float snoise(vec2 v){',
+        '  const vec4 C=vec4(.211324865405187,.366025403784439,-.577350269189626,.024390243902439);',
+        '  vec2 i=floor(v+dot(v,C.yy));',
+        '  vec2 x0=v-i+dot(i,C.xx);',
+        '  vec2 i1=(x0.x>x0.y)?vec2(1.,0.):vec2(0.,1.);',
+        '  vec4 x12=x0.xyxy+C.xxzz;x12.xy-=i1;',
+        '  i=mod289(i);',
+        '  vec3 p=permute(permute(i.y+vec3(0.,i1.y,1.))+i.x+vec3(0.,i1.x,1.));',
+        '  vec3 m=max(.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);',
+        '  m=m*m;m=m*m;',
+        '  vec3 x_=2.*fract(p*C.www)-1.;',
+        '  vec3 h=abs(x_)-.5;',
+        '  vec3 ox=floor(x_+.5);',
+        '  vec3 a0=x_-ox;',
+        '  m*=1.79284291400159-.85373472095314*(a0*a0+h*h);',
+        '  vec3 g;',
+        '  g.x=a0.x*x0.x+h.x*x0.y;',
+        '  g.yz=a0.yz*x12.xz+h.yz*x12.yw;',
+        '  return 130.*dot(m,g);',
+        '}',
+        '',
+        'void main(){',
+        '  vec2 uv=gl_FragCoord.xy/u_res;',
+        '  float t=u_time*.04;',
+        '  float n=0.;',
+        '  n+=snoise(uv*1.8+t*.35)*.5;',
+        '  n+=snoise(uv*3.5-t*.25)*.25;',
+        '  n+=snoise(uv*7.+t*.15)*.125;',
+        '  n=n*.5+.5;',
+        '',
+        '  /* Slide-reactive colour shift */',
+        '  float s=u_slide/9.;',
+        '  vec3 c1=mix(vec3(.022,.022,.062),vec3(.04,.01,.06),s);',
+        '  vec3 c2=mix(vec3(.052,.022,.088),vec3(.015,.04,.08),s);',
+        '  vec3 accent=mix(vec3(0.,.40,.65),vec3(.45,.15,.55),s*.8);',
+        '',
+        '  vec3 col=mix(c1,c2,n);',
+        '  col+=accent*pow(max(n-.42,0.)*1.8,3.)*.18;',
+        '',
+        '  /* Animated light streaks */',
+        '  float streak=snoise(vec2(uv.x*2.+t*1.5,uv.y*0.3));',
+        '  streak=smoothstep(.55,.7,streak)*0.02;',
+        '  col+=accent*streak;',
+        '',
+        '  /* vignette */',
+        '  vec2 vc=uv-.5;',
+        '  float vig=1.-dot(vc,vc)*1.8;',
+        '  col*=clamp(vig,.28,1.);',
+        '',
+        '  /* film grain */',
+        '  float grain=fract(sin(dot(gl_FragCoord.xy+fract(u_time)*111.,vec2(12.9898,78.233)))*43758.5453);',
+        '  col+=(grain-.5)*.02;',
+        '',
+        '  gl_FragColor=vec4(col,1.);',
+        '}'
+    ].join('\n');
+
+    function initGL() {
+        gl = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
+        if (!gl) return;
+
+        function compile(type, src) {
+            var s = gl.createShader(type);
+            gl.shaderSource(s, src);
+            gl.compileShader(s);
+            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+                console.error('Shader:', gl.getShaderInfoLog(s));
+                return null;
+            }
+            return s;
+        }
+
+        var vs = compile(gl.VERTEX_SHADER, VERT_SRC);
+        var fs = compile(gl.FRAGMENT_SHADER, FRAG_SRC);
+        if (!vs || !fs) { gl = null; return; }
+
+        glProg = gl.createProgram();
+        gl.attachShader(glProg, vs);
+        gl.attachShader(glProg, fs);
+        gl.linkProgram(glProg);
+        if (!gl.getProgramParameter(glProg, gl.LINK_STATUS)) {
+            console.error('Link:', gl.getProgramInfoLog(glProg));
+            gl = null;
+            return;
+        }
+
+        gl.useProgram(glProg);
+
+        var buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        var pos = gl.getAttribLocation(glProg, 'a_pos');
+        gl.enableVertexAttribArray(pos);
+        gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+        uTime = gl.getUniformLocation(glProg, 'u_time');
+        uRes = gl.getUniformLocation(glProg, 'u_res');
+        uSlide = gl.getUniformLocation(glProg, 'u_slide');
+    }
+
+    function resizeGL() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        glCanvas.width = w * dpr;
+        glCanvas.height = h * dpr;
+        glCanvas.style.width = w + 'px';
+        glCanvas.style.height = h + 'px';
+        if (gl) gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+    }
+
+    var glStart = 0;
+    var glSlideSmooth = 0;
+    function renderGL() {
+        if (gl) {
+            var now = performance.now() / 1000;
+            glSlideSmooth += (current - glSlideSmooth) * 0.05;
+            gl.uniform1f(uTime, now - glStart);
+            gl.uniform2f(uRes, glCanvas.width, glCanvas.height);
+            gl.uniform1f(uSlide, glSlideSmooth);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        }
+        requestAnimationFrame(renderGL);
+    }
+
+    /* ==================================================================
+       SLIDE NAVIGATION WITH DRAG TRANSITIONS + CURSOR
+       ================================================================== */
+    function goTo(index, skipCursor) {
+        if (transitioning || index === current) return;
+        if (index < 0 || index >= TOTAL) return;
+
+        var direction = index > current ? 'right' : 'left';
+        var targetClipEl = $('.clip[data-index="' + index + '"]');
+
+        if (!skipCursor && targetClipEl) {
+            /* Animate cursor to the target clip first, then do the transition */
+            transitioning = true;
+            animateCursorToClip(targetClipEl, function () {
+                performDragTransition(index, direction);
+            });
+        } else {
+            transitioning = true;
+            performDragTransition(index, direction);
+        }
+    }
+
+    function performDragTransition(index, direction) {
+        var prevSlide = slides[current];
+        var nextSlide = slides[index];
+
+        /* Emit particle burst at viewport center */
+        var vpRect = viewport.getBoundingClientRect();
+        var burstX = vpRect.left + vpRect.width / 2;
+        var burstY = vpRect.top + vpRect.height / 2;
+        var color = CLIP_COLORS[index] || '#00a4ff';
+        emitBurst(burstX, burstY, color, 40);
+        emitBurst(burstX + (direction === 'right' ? -80 : 80), burstY, 'rgba(255,255,255,0.8)', 15);
+
+        /* Flash viewport glow */
+        if (viewportGlow) {
+            viewportGlow.classList.remove('flash');
+            void viewportGlow.offsetWidth;
+            viewportGlow.classList.add('flash');
+        }
+
+        /* Reset anim delays on outgoing */
+        $$('.anim-el', prevSlide).forEach(function (el) {
+            el.style.transitionDelay = '0ms';
+        });
+
+        /* Drag out the current slide */
+        prevSlide.classList.remove('active');
+        prevSlide.classList.add(direction === 'right' ? 'drag-out-left' : 'drag-out-right');
+
+        /* Bring in the new slide */
+        setTimeout(function () {
+            /* Clean outgoing classes */
+            prevSlide.classList.remove('drag-out-left', 'drag-out-right');
+            prevSlide.style.opacity = '0';
+            prevSlide.style.transform = '';
+            prevSlide.style.filter = '';
+
+            /* Set entry delays on anim elements */
+            $$('.anim-el', nextSlide).forEach(function (el, i) {
+                el.style.transitionDelay = (i * 90 + 100) + 'ms';
+            });
+
+            nextSlide.classList.add('active', direction === 'right' ? 'drag-in-right' : 'drag-in-left');
+
+            current = index;
+            updateTimeline();
+            updateTimecode();
+
+            /* Clean after animation */
+            setTimeout(function () {
+                nextSlide.classList.remove('drag-in-left', 'drag-in-right');
+                transitioning = false;
+            }, TRANSITION_MS);
+        }, 120);
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    function toggleAutoPlay() {
+        autoPlaying = !autoPlaying;
+        var btn = $('#playBtn');
+        var icon = $('#playIcon');
+        if (autoPlaying) {
+            btn.classList.add('playing');
+            icon.className = 'fas fa-pause';
+            autoTimer = setInterval(function () {
+                if (current < TOTAL - 1) goTo(current + 1, true);
+                else toggleAutoPlay();
+            }, 3500);
+        } else {
+            btn.classList.remove('playing');
+            icon.className = 'fas fa-play';
+            clearInterval(autoTimer);
+            autoTimer = null;
+        }
+    }
+
+    /* ==================================================================
+       TIMELINE
+       ================================================================== */
+    function buildTimeline() {
+        var tracks = $('#timelineTracks');
+        var ruler = $('#timelineRuler');
+
+        for (var i = 0; i <= TOTAL; i++) {
+            var mark = document.createElement('div');
+            mark.className = 'ruler-mark';
+            mark.style.left = (i / TOTAL * 100) + '%';
+            if (i < TOTAL) {
+                var span = document.createElement('span');
+                span.textContent = formatTC(i * 3);
+                mark.appendChild(span);
+            }
+            ruler.appendChild(mark);
+        }
+
+        /* V1 */
+        var v1 = makeTrack('V1');
+        CLIP_LABELS.forEach(function (label, i) {
+            var clip = document.createElement('div');
+            clip.className = 'clip';
+            clip.style.background = CLIP_COLORS[i];
+            clip.style.left = (i / TOTAL * 100) + '%';
+            clip.style.width = (100 / TOTAL - 0.3) + '%';
+            clip.textContent = label;
+            clip.setAttribute('data-index', String(i));
+            clip.addEventListener('click', function () { goTo(i, true); });
+            if (i === 0) clip.classList.add('active');
+            v1.clips.appendChild(clip);
+        });
+        tracks.appendChild(v1.row);
+
+        /* V2 */
+        var v2 = makeTrack('V2');
+        [0, 3, 6, 9].forEach(function (i) {
+            var clip = document.createElement('div');
+            clip.className = 'clip';
+            clip.style.background = 'rgba(234,119,255,0.35)';
+            clip.style.left = (i / TOTAL * 100) + '%';
+            clip.style.width = (100 / TOTAL - 0.3) + '%';
+            clip.textContent = 'FX';
+            clip.style.fontSize = '7px';
+            clip.style.opacity = '0.45';
+            v2.clips.appendChild(clip);
+        });
+        tracks.appendChild(v2.row);
+
+        /* A1 */
+        var a1 = makeTrack('A1');
+        var wc = document.createElement('canvas');
+        wc.className = 'wave-canvas';
+        a1.clips.appendChild(wc);
+        tracks.appendChild(a1.row);
+        window._waveCanvas = wc;
+    }
+
+    function makeTrack(name) {
+        var row = document.createElement('div');
+        row.className = 'track-row';
+        var lbl = document.createElement('div');
+        lbl.className = 'track-label';
+        lbl.textContent = name;
+        var clips = document.createElement('div');
+        clips.className = 'track-clips';
+        row.appendChild(lbl);
+        row.appendChild(clips);
+        return { row: row, clips: clips };
+    }
+
+    function updateTimeline() {
+        playheadEl.style.left = ((current + 0.5) / TOTAL * 100) + '%';
+        $$('.clip[data-index]').forEach(function (c) {
+            c.classList.toggle('active', parseInt(c.getAttribute('data-index')) === current);
+        });
+        if (currentNumEl) currentNumEl.textContent = current + 1;
+    }
+
+    function updateTimecode() {
+        if (timecodeEl) timecodeEl.textContent = formatTC(current * 3);
+    }
+
+    function formatTC(sec) {
+        var h = String(Math.floor(sec / 3600)).padStart(2, '0');
+        var m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+        var s = String(sec % 60).padStart(2, '0');
+        return h + ';' + m + ';' + s + ';00';
+    }
+
+    /* ==================================================================
+       WAVEFORM
+       ================================================================== */
+    function initWaveform() {
+        var canvas = window._waveCanvas;
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var data = [];
+        for (var i = 0; i < 220; i++) data.push(Math.random() * 0.8 + 0.1);
+
+        function draw() {
+            var parent = canvas.parentElement;
+            if (!parent) { requestAnimationFrame(draw); return; }
+            var rect = parent.getBoundingClientRect();
+            canvas.width = rect.width * 2;
+            canvas.height = rect.height * 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var barW = canvas.width / data.length;
+            var midY = canvas.height / 2;
+            var maxH = canvas.height * 0.34;
+            var t = performance.now() / 1000;
+            var playPos = (current + 0.5) / TOTAL;
+
+            for (var j = 0; j < data.length; j++) {
+                var x = j * barW;
+                var normX = j / data.length;
+                var amp = data[j] * (0.3 + Math.sin(t * 2 + j * 0.12) * 0.08);
+                var h = amp * maxH;
+                var alpha = normX < playPos ? 0.55 : 0.18;
+                var near = Math.abs(normX - playPos) < 0.02;
+
+                ctx.fillStyle = near ? 'rgba(76,175,80,0.9)' : 'rgba(76,175,80,' + alpha + ')';
+                ctx.fillRect(x, midY - h, Math.max(barW - 1, 1), h * 2);
+            }
+            requestAnimationFrame(draw);
+        }
+        draw();
+    }
+
+    /* ==================================================================
+       ADD DECORATIVE LIGHT STREAK
+       ================================================================== */
+    function addLightStreak() {
+        var vp = $('#viewport');
+        if (!vp) return;
+        var streak = document.createElement('div');
+        streak.className = 'light-streak';
+        vp.appendChild(streak);
+    }
+
+    /* ==================================================================
+       EVENTS
+       ================================================================== */
+    function setupEvents() {
+        document.addEventListener('keydown', function (e) {
+            switch (e.key) {
+                case 'ArrowRight': case 'ArrowDown': e.preventDefault(); next(); break;
+                case 'ArrowLeft': case 'ArrowUp': e.preventDefault(); prev(); break;
+                case ' ': e.preventDefault(); toggleAutoPlay(); break;
+                case 'Home': e.preventDefault(); goTo(0); break;
+                case 'End': e.preventDefault(); goTo(TOTAL - 1); break;
+            }
+        });
+
+        viewport.addEventListener('wheel', function (e) {
+            e.preventDefault();
+            if (e.deltaY > 0) next(); else prev();
+        }, { passive: false });
+
+        var touchY = 0;
+        viewport.addEventListener('touchstart', function (e) {
+            touchY = e.changedTouches[0].clientY;
+        }, { passive: true });
+        viewport.addEventListener('touchend', function (e) {
+            var dy = e.changedTouches[0].clientY - touchY;
+            if (Math.abs(dy) > 40) {
+                if (dy < 0) next(); else prev();
+            }
+        }, { passive: true });
+
+        viewport.addEventListener('click', function (e) {
+            var rect = viewport.getBoundingClientRect();
+            var x = (e.clientX - rect.left) / rect.width;
+            if (x < 0.25) prev();
+            else if (x > 0.75) next();
+        });
+
+        $('#prevBtn').addEventListener('click', function (e) { e.stopPropagation(); prev(); });
+        $('#nextBtn').addEventListener('click', function (e) { e.stopPropagation(); next(); });
+        $('#playBtn').addEventListener('click', function (e) { e.stopPropagation(); toggleAutoPlay(); });
+
+        $('#exportBtn').addEventListener('click', exportPPTX);
+
+        window.addEventListener('resize', function () {
+            resizeGL();
+            resizeParticleCanvas();
+        });
+    }
+
+    /* ==================================================================
+       PPTX EXPORT
+       ================================================================== */
+    function exportPPTX() {
+        if (typeof PptxGenJS === 'undefined') { alert('Export library not loaded.'); return; }
+
+        var pptx = new PptxGenJS();
+        pptx.layout = 'LAYOUT_WIDE';
+        pptx.author = 'Yehia Salem';
+        pptx.title = 'Industry Placement Portfolio';
+
+        var bg = { color: '0d0d1a' };
+        var accent = '00A4FF';
+        var tw = 'FFFFFF';
+        var tm = '999999';
+        var td = '666666';
+
+        function addBg(slide) {
+            slide.background = bg;
+            slide.addShape(pptx.shapes.RECTANGLE, { x: 0, y: 0, w: '100%', h: 0.04, fill: { color: accent } });
+        }
+
+        var s1 = pptx.addSlide();
+        addBg(s1);
+        s1.addText('BUE \u00b7 FACULTY OF COMMUNICATION & MASS MEDIA', {
+            x: 0.5, y: 1.8, w: 12, h: 0.4, fontSize: 10, color: accent, align: 'center', fontFace: 'Arial', bold: true
+        });
+        s1.addText('YEHIA\nSALEM', {
+            x: 0.5, y: 2.5, w: 12, h: 2.4, fontSize: 52, color: tw, align: 'center', fontFace: 'Georgia', bold: true, lineSpacingMultiple: 0.9
+        });
+        s1.addText('Industry Placement Portfolio', {
+            x: 0.5, y: 5, w: 12, h: 0.5, fontSize: 14, color: td, align: 'center', fontFace: 'Arial'
+        });
+        s1.addText('229916 \u00b7 Industry Pathway', {
+            x: 0.5, y: 5.8, w: 12, h: 0.3, fontSize: 10, color: td, align: 'center', fontFace: 'Consolas'
+        });
+
+        var s2 = pptx.addSlide();
+        addBg(s2);
+        s2.addText('01 \u2014 THE ROLE', { x: 0.5, y: 1.2, w: 12, h: 0.4, fontSize: 10, color: accent, fontFace: 'Consolas', align: 'center' });
+        s2.addText('FCMM Social Media Team', { x: 0.5, y: 2, w: 12, h: 0.8, fontSize: 34, color: tw, align: 'center', fontFace: 'Georgia', bold: true });
+        s2.addText('Video production & content creation for the university\u2019s official social channels.', { x: 2.5, y: 3.1, w: 8, h: 0.5, fontSize: 12, color: tm, align: 'center', fontFace: 'Arial' });
+        [{ n: '6+', l: 'WEEKS' }, { n: '40', l: 'HOURS' }, { n: '5+', l: 'VIDEOS' }, { n: '3', l: 'TEAM' }].forEach(function (st, i) {
+            var sx = 2.5 + i * 2.2;
+            s2.addText(st.n, { x: sx, y: 4.2, w: 2, h: 0.6, fontSize: 26, color: tw, align: 'center', fontFace: 'Consolas', bold: true });
+            s2.addText(st.l, { x: sx, y: 4.8, w: 2, h: 0.3, fontSize: 9, color: td, align: 'center', fontFace: 'Arial', bold: true });
+        });
+
+        var s3 = pptx.addSlide();
+        addBg(s3);
+        s3.addText('02 \u2014 PORTFOLIO', { x: 0.5, y: 0.8, w: 12, h: 0.4, fontSize: 10, color: accent, fontFace: 'Consolas', align: 'center' });
+        [{ t: 'Open Day Video', d: 'Full campus event coverage' }, { t: 'Discussion Coverage', d: 'IMC & filming discussion edits' }, { t: 'TikTok & Reels', d: 'Trend-driven short-form content' }].forEach(function (c, i) {
+            var cx = 0.8 + i * 4;
+            s3.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: cx, y: 2, w: 3.6, h: 2.8, rectRadius: 0.1, fill: { color: '1a1a2e' }, line: { color: '2a2a40', width: 0.5 } });
+            s3.addText(c.t, { x: cx + 0.3, y: 3.2, w: 3, h: 0.5, fontSize: 14, color: tw, fontFace: 'Georgia', bold: true });
+            s3.addText(c.d, { x: cx + 0.3, y: 3.7, w: 3, h: 0.4, fontSize: 10, color: tm, fontFace: 'Arial' });
+        });
+
+        var s4 = pptx.addSlide();
+        addBg(s4);
+        s4.addText('03 \u2014 HERO PROJECT', { x: 0.5, y: 1, w: 12, h: 0.4, fontSize: 10, color: accent, fontFace: 'Consolas', align: 'center' });
+        s4.addText('Open Day Video', { x: 0.5, y: 1.8, w: 12, h: 0.8, fontSize: 32, color: tw, align: 'center', fontFace: 'Georgia', bold: true });
+        s4.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 3, y: 3, w: 7, h: 2.2, rectRadius: 0.15, fill: { color: '1a1a2e' }, line: { color: accent, width: 1, dashType: 'dash' } });
+        s4.addText('[Upload]', { x: 3, y: 3.6, w: 7, h: 0.8, fontSize: 12, color: tm, align: 'center', fontFace: 'Arial', italic: true });
+        ['Premiere Pro', '6+ hrs footage', 'Voiceover', 'Captions'].forEach(function (t, i) {
+            s4.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 2.2 + i * 2.2, y: 5.6, w: 2, h: 0.35, rectRadius: 0.15, fill: { color: '1a1a2e' }, line: { color: '3a3a5a', width: 0.5 } });
+            s4.addText(t, { x: 2.2 + i * 2.2, y: 5.6, w: 2, h: 0.35, fontSize: 9, color: tm, align: 'center', fontFace: 'Arial' });
+        });
+
+        var s5 = pptx.addSlide();
+        addBg(s5);
+        s5.addText('04 \u2014 SHORT-FORM', { x: 0.5, y: 1, w: 12, h: 0.4, fontSize: 10, color: accent, fontFace: 'Consolas', align: 'center' });
+        s5.addText('TikTok & Reels', { x: 0.5, y: 1.8, w: 12, h: 0.8, fontSize: 32, color: tw, align: 'center', fontFace: 'Georgia', bold: true });
+        s5.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 3, y: 3, w: 7, h: 2.2, rectRadius: 0.15, fill: { color: '1a1a2e' }, line: { color: accent, width: 1, dashType: 'dash' } });
+        s5.addText('[Upload]', { x: 3, y: 3.6, w: 7, h: 0.8, fontSize: 12, color: tm, align: 'center', fontFace: 'Arial', italic: true });
+        ['CapCut', 'Trend-driven', '3-person team', 'Christmas campaign'].forEach(function (t, i) {
+            s5.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 2.2 + i * 2.2, y: 5.6, w: 2, h: 0.35, rectRadius: 0.15, fill: { color: '1a1a2e' }, line: { color: '3a3a5a', width: 0.5 } });
+            s5.addText(t, { x: 2.2 + i * 2.2, y: 5.6, w: 2, h: 0.35, fontSize: 9, color: tm, align: 'center', fontFace: 'Arial' });
+        });
+
+        var s6 = pptx.addSlide();
+        addBg(s6);
+        s6.addText('05 \u2014 THE PIPELINE', { x: 0.5, y: 1, w: 12, h: 0.4, fontSize: 10, color: accent, fontFace: 'Consolas', align: 'center' });
+        ['Script', 'Film', 'Edit', 'Publish'].forEach(function (step, i) {
+            var px = 1.5 + i * 2.8;
+            s6.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: px, y: 2.4, w: 2, h: 1.8, rectRadius: 0.1, fill: { color: '1a1a2e' }, line: { color: '3a3a5a', width: 0.5 } });
+            s6.addText(step, { x: px, y: 3.4, w: 2, h: 0.5, fontSize: 14, color: tw, align: 'center', fontFace: 'Arial', bold: true });
+            if (i < 3) s6.addText('\u2192', { x: px + 2, y: 2.9, w: 0.8, h: 0.8, fontSize: 18, color: td, align: 'center' });
+        });
+        s6.addText('Trending audio \u00b7 Beat sync \u00b7 Voiceover \u00b7 Captions', { x: 1, y: 4.8, w: 11, h: 0.4, fontSize: 11, color: td, align: 'center', fontFace: 'Arial' });
+
+        var s7 = pptx.addSlide();
+        addBg(s7);
+        s7.addText('06 \u2014 REFLECTION', { x: 0.5, y: 1.2, w: 12, h: 0.4, fontSize: 10, color: accent, fontFace: 'Consolas', align: 'center' });
+        s7.addShape(pptx.shapes.RECTANGLE, { x: 5.8, y: 2.2, w: 1.4, h: 0.04, fill: { color: accent } });
+        s7.addText('"The biggest takeaway was Ms. Nadia\u2019s fearless approach \u2014 just press record and figure it out."', { x: 2, y: 2.8, w: 9, h: 1.8, fontSize: 20, color: tw, align: 'center', fontFace: 'Georgia', italic: true, lineSpacingMultiple: 1.5 });
+        s7.addText('Learning by doing, not by planning.', { x: 2, y: 4.8, w: 9, h: 0.4, fontSize: 11, color: accent, align: 'center', fontFace: 'Arial', bold: true });
+
+        var s8 = pptx.addSlide();
+        addBg(s8);
+        s8.addText('07 \u2014 SKILLS', { x: 0.5, y: 0.8, w: 12, h: 0.4, fontSize: 10, color: accent, fontFace: 'Consolas', align: 'center' });
+        [{ t: 'Technical', d: 'Premiere Pro \u00b7 CapCut \u00b7 Cameras' }, { t: 'Creative', d: 'Storytelling \u00b7 Editing rhythm \u00b7 Pacing' }, { t: 'Leadership', d: 'Team coordination \u00b7 Workflow design' }, { t: 'Professional', d: 'Consent \u00b7 Diplomacy \u00b7 Problem-solving' }].forEach(function (sk, i) {
+            var col = i % 2; var row = Math.floor(i / 2);
+            var sx = 2.5 + col * 4.5; var sy = 2 + row * 2;
+            s8.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: sx, y: sy, w: 4, h: 1.5, rectRadius: 0.1, fill: { color: '1a1a2e' }, line: { color: '2a2a40', width: 0.5 } });
+            s8.addText(sk.t, { x: sx + 0.4, y: sy + 0.3, w: 3.2, h: 0.4, fontSize: 14, color: tw, fontFace: 'Arial', bold: true });
+            s8.addText(sk.d, { x: sx + 0.4, y: sy + 0.8, w: 3.2, h: 0.4, fontSize: 10, color: tm, fontFace: 'Arial' });
+        });
+
+        var s9 = pptx.addSlide();
+        addBg(s9);
+        s9.addText('08 \u2014 LOOKING FORWARD', { x: 0.5, y: 1.2, w: 12, h: 0.4, fontSize: 10, color: accent, fontFace: 'Consolas', align: 'center' });
+        ['Advanced colour grading & motion graphics', 'Building a freelance editing portfolio', 'Merging data analytics with creative production'].forEach(function (item, i) {
+            var fy = 2.5 + i * 1.3;
+            s9.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 2.5, y: fy, w: 8, h: 0.9, rectRadius: 0.1, fill: { color: '1a1a2e' }, line: { color: '2a2a40', width: 0.5 } });
+            s9.addText('\u2192  ' + item, { x: 2.8, y: fy, w: 7.5, h: 0.9, fontSize: 13, color: tw, fontFace: 'Arial', valign: 'middle' });
+        });
+
+        var s10 = pptx.addSlide();
+        addBg(s10);
+        s10.addText('THANK YOU', { x: 0.5, y: 2, w: 12, h: 1.2, fontSize: 44, color: tw, align: 'center', fontFace: 'Georgia', bold: true });
+        s10.addText('@cmm.bue  \u00b7  bue.edu.eg', { x: 0.5, y: 3.8, w: 12, h: 0.5, fontSize: 14, color: tm, align: 'center', fontFace: 'Arial' });
+        s10.addText('Yehia Salem \u00b7 229916', { x: 0.5, y: 4.8, w: 12, h: 0.4, fontSize: 10, color: td, align: 'center', fontFace: 'Consolas' });
+
+        pptx.writeFile({ fileName: 'Yehia_Salem_Portfolio.pptx' });
+    }
+
+    /* ==================================================================
+       INIT
+       ================================================================== */
+    document.addEventListener('DOMContentLoaded', function () {
+        slides = $$('.slide');
+        viewport = $('#viewport');
+        playheadEl = $('#playhead');
+        timecodeEl = $('#timecode');
+        currentNumEl = $('#currentNum');
+        viewportGlow = $('#viewportGlow');
+
+        /* Position glow inside monitor-viewport */
+        var mv = $('.monitor-viewport');
+        if (mv && viewportGlow) {
+            mv.style.position = 'relative';
+            mv.appendChild(viewportGlow);
+        }
+
+        /* Stagger initial slide entry */
+        $$('.anim-el', slides[0]).forEach(function (el, i) {
+            el.style.transitionDelay = (i * 100 + 400) + 'ms';
+        });
+
+        glStart = performance.now() / 1000;
+        initGL();
+        resizeGL();
+        renderGL();
+        initCursor();
+        initParticles();
+        addLightStreak();
+        buildTimeline();
+        initWaveform();
+        setupEvents();
+        updateTimeline();
+        updateTimecode();
+    });
+
+})();

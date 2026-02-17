@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yehia Salem — Industry Placement</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- WebGL animated background -->
+    <canvas id="webgl-bg"></canvas>
+
+    <!-- Premiere Pro Shell -->
+    <div class="premiere-shell">
+
+        <!-- ===== MENU BAR ===== -->
+        <header class="menu-bar">
+            <div class="menu-left">
+                <span class="pr-logo">Pr</span>
+                <span class="menu-item">File</span>
+                <span class="menu-item">Edit</span>
+                <span class="menu-item">Clip</span>
+                <span class="menu-item">Sequence</span>
+                <span class="menu-item">Markers</span>
+                <span class="menu-item">Graphics</span>
+                <span class="menu-item">View</span>
+                <span class="menu-item">Window</span>
+            </div>
+            <div class="menu-center">Yehia_Salem_Portfolio.prproj</div>
+            <div class="menu-right">
+                <button class="export-btn" id="exportBtn"><i class="fas fa-file-export"></i><span>Export</span></button>
+            </div>
+        </header>
+
+        <!-- ===== WORKSPACE TABS ===== -->
+        <nav class="workspace-tabs">
+            <span class="ws-tab">Learning</span>
+            <span class="ws-tab active">Editing</span>
+            <span class="ws-tab">Color</span>
+            <span class="ws-tab">Effects</span>
+            <span class="ws-tab">Audio</span>
+            <span class="ws-tab">Graphics</span>
+        </nav>
+
+        <!-- ===== MAIN AREA ===== -->
+        <main class="main-area">
+            <section class="program-monitor">
+
+                <!-- Monitor Header -->
+                <div class="monitor-header">
+                    <span class="monitor-tab active">Program: <em>Yehia_Salem_Seq</em></span>
+                    <span class="monitor-controls"><i class="fas fa-wrench"></i></span>
+                </div>
+
+                <!-- Viewport -->
+                <div class="monitor-viewport" id="viewport">
+                    <div class="viewport-inner">
+
+                        <!-- SLIDE 0 — TITLE -->
+                        <div class="slide active" data-index="0">
+                            <div class="slide-content slide-title">
+                                <div class="anim-el"><span class="overline">BUE · Faculty of Communication &amp; Mass Media</span></div>
+                                <div class="anim-el"><h1 class="hero-name">YEHIA<br>SALEM</h1></div>
+                                <div class="anim-el"><p class="hero-sub">Industry Placement Portfolio</p></div>
+                                <div class="anim-el">
+                                    <div class="badge-row">
+                                        <span class="badge">229916</span>
+                                        <span class="badge-sep">·</span>
+                                        <span class="badge">Industry Pathway</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 1 — THE ROLE -->
+                        <div class="slide" data-index="1">
+                            <div class="slide-content">
+                                <div class="anim-el"><span class="section-tag">01 — THE ROLE</span></div>
+                                <div class="anim-el"><h2 class="slide-heading">FCMM Social Media Team</h2></div>
+                                <div class="anim-el"><p class="slide-body">Video production &amp; content creation for the university's official social channels.</p></div>
+                                <div class="anim-el">
+                                    <div class="stats-row">
+                                        <div class="stat"><span class="stat-num">6+</span><span class="stat-label">Weeks</span></div>
+                                        <div class="stat"><span class="stat-num">40</span><span class="stat-label">Hours</span></div>
+                                        <div class="stat"><span class="stat-num">5+</span><span class="stat-label">Videos</span></div>
+                                        <div class="stat"><span class="stat-num">3</span><span class="stat-label">Team</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 2 — PORTFOLIO -->
+                        <div class="slide" data-index="2">
+                            <div class="slide-content">
+                                <div class="anim-el"><span class="section-tag">02 — PORTFOLIO</span></div>
+                                <div class="anim-el">
+                                    <div class="project-cards">
+                                        <div class="project-card accent-card">
+                                            <div class="card-badge">Hero</div>
+                                            <div class="card-icon"><i class="fas fa-film"></i></div>
+                                            <h3>Open Day Video</h3>
+                                            <p>Full campus event coverage</p>
+                                        </div>
+                                        <div class="project-card">
+                                            <div class="card-icon"><i class="fas fa-comments"></i></div>
+                                            <h3>Discussion Coverage</h3>
+                                            <p>IMC &amp; filming discussion edits</p>
+                                        </div>
+                                        <div class="project-card">
+                                            <div class="card-icon"><i class="fab fa-tiktok"></i></div>
+                                            <h3>TikTok &amp; Reels</h3>
+                                            <p>Trend-driven short-form content</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 3 — HERO PROJECT -->
+                        <div class="slide" data-index="3">
+                            <div class="slide-content">
+                                <div class="anim-el"><span class="section-tag">03 — HERO PROJECT</span></div>
+                                <div class="anim-el"><h2 class="slide-heading">Open Day Video</h2></div>
+                                <div class="anim-el">
+                                    <div class="upload-zone"><i class="fas fa-cloud-upload-alt"></i><p>Drop video or screenshot here</p></div>
+                                </div>
+                                <div class="anim-el">
+                                    <div class="tech-tags">
+                                        <span class="tech-tag"><i class="fas fa-wand-magic-sparkles"></i> Premiere Pro</span>
+                                        <span class="tech-tag"><i class="fas fa-clock"></i> 6+ hrs footage</span>
+                                        <span class="tech-tag"><i class="fas fa-microphone"></i> Voiceover</span>
+                                        <span class="tech-tag"><i class="fas fa-closed-captioning"></i> Captions</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 4 — SHORT-FORM -->
+                        <div class="slide" data-index="4">
+                            <div class="slide-content">
+                                <div class="anim-el"><span class="section-tag">04 — SHORT-FORM</span></div>
+                                <div class="anim-el"><h2 class="slide-heading">TikTok &amp; Reels</h2></div>
+                                <div class="anim-el">
+                                    <div class="upload-zone"><i class="fas fa-cloud-upload-alt"></i><p>Drop content sample here</p></div>
+                                </div>
+                                <div class="anim-el">
+                                    <div class="tech-tags">
+                                        <span class="tech-tag"><i class="fas fa-mobile-screen"></i> CapCut</span>
+                                        <span class="tech-tag"><i class="fas fa-fire"></i> Trend-driven</span>
+                                        <span class="tech-tag"><i class="fas fa-users"></i> 3-person team</span>
+                                        <span class="tech-tag"><i class="fas fa-tree"></i> Christmas campaign</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 5 — PIPELINE -->
+                        <div class="slide" data-index="5">
+                            <div class="slide-content">
+                                <div class="anim-el"><span class="section-tag">05 — THE PIPELINE</span></div>
+                                <div class="anim-el">
+                                    <div class="pipeline-flow">
+                                        <div class="pipe-step"><div class="pipe-icon"><i class="fas fa-scroll"></i></div><span>Script</span></div>
+                                        <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+                                        <div class="pipe-step"><div class="pipe-icon"><i class="fas fa-video"></i></div><span>Film</span></div>
+                                        <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+                                        <div class="pipe-step"><div class="pipe-icon"><i class="fas fa-scissors"></i></div><span>Edit</span></div>
+                                        <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+                                        <div class="pipe-step"><div class="pipe-icon"><i class="fas fa-share-nodes"></i></div><span>Publish</span></div>
+                                    </div>
+                                </div>
+                                <div class="anim-el"><p class="pipeline-detail">Trending audio · Beat sync · Voiceover · Captions</p></div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 6 — REFLECTION -->
+                        <div class="slide" data-index="6">
+                            <div class="slide-content slide-reflection">
+                                <div class="anim-el"><span class="section-tag">06 — REFLECTION</span></div>
+                                <div class="anim-el">
+                                    <blockquote class="big-quote">"The biggest takeaway was Ms.&nbsp;Nadia's fearless approach&nbsp;— just press record and figure it out."</blockquote>
+                                </div>
+                                <div class="anim-el"><p class="quote-caption">Learning by doing, not by planning.</p></div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 7 — SKILLS -->
+                        <div class="slide" data-index="7">
+                            <div class="slide-content">
+                                <div class="anim-el"><span class="section-tag">07 — SKILLS</span></div>
+                                <div class="anim-el">
+                                    <div class="skill-grid">
+                                        <div class="skill-card"><div class="skill-icon"><i class="fas fa-laptop-code"></i></div><h3>Technical</h3><p>Premiere Pro · CapCut · Cameras</p></div>
+                                        <div class="skill-card"><div class="skill-icon"><i class="fas fa-palette"></i></div><h3>Creative</h3><p>Storytelling · Editing rhythm · Pacing</p></div>
+                                        <div class="skill-card"><div class="skill-icon"><i class="fas fa-users-gear"></i></div><h3>Leadership</h3><p>Team coordination · Workflow design</p></div>
+                                        <div class="skill-card"><div class="skill-icon"><i class="fas fa-handshake-simple"></i></div><h3>Professional</h3><p>Consent · Diplomacy · Problem-solving</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 8 — LOOKING FORWARD -->
+                        <div class="slide" data-index="8">
+                            <div class="slide-content">
+                                <div class="anim-el"><span class="section-tag">08 — LOOKING FORWARD</span></div>
+                                <div class="anim-el">
+                                    <div class="next-items">
+                                        <div class="next-item"><span class="next-arrow">→</span><span>Advanced colour grading &amp; motion graphics</span></div>
+                                        <div class="next-item"><span class="next-arrow">→</span><span>Building a freelance editing portfolio</span></div>
+                                        <div class="next-item"><span class="next-arrow">→</span><span>Merging data analytics with creative production</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 9 — END -->
+                        <div class="slide" data-index="9">
+                            <div class="slide-content slide-end">
+                                <div class="anim-el"><h2 class="end-title">THANK YOU</h2></div>
+                                <div class="anim-el">
+                                    <div class="end-links">
+                                        <a href="https://www.tiktok.com/@cmm.bue" target="_blank" class="end-link"><i class="fab fa-tiktok"></i><span>@cmm.bue</span></a>
+                                        <a href="https://bue.edu.eg" target="_blank" class="end-link"><i class="fas fa-globe"></i><span>bue.edu.eg</span></a>
+                                    </div>
+                                </div>
+                                <div class="anim-el"><p class="end-name">Yehia Salem · 229916</p></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Transport Controls -->
+                <div class="transport-bar">
+                    <div class="transport-left">
+                        <button class="transport-btn" id="prevBtn" title="Previous (←)"><i class="fas fa-backward-step"></i></button>
+                        <button class="transport-btn play-btn" id="playBtn" title="Auto-play (Space)"><i class="fas fa-play" id="playIcon"></i></button>
+                        <button class="transport-btn" id="nextBtn" title="Next (→)"><i class="fas fa-forward-step"></i></button>
+                    </div>
+                    <div class="transport-right">
+                        <span class="timecode" id="timecode">00;00;00;00</span>
+                        <span class="slide-counter"><span id="currentNum">1</span> / <span id="totalNum">10</span></span>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- ===== TIMELINE PANEL ===== -->
+        <section class="timeline-panel">
+            <div class="timeline-header">
+                <span class="timeline-label"><i class="fas fa-stream"></i> Timeline: <em>Yehia_Salem_Seq</em></span>
+                <div class="timeline-tools">
+                    <i class="fas fa-magnet" title="Snap"></i>
+                    <i class="fas fa-link" title="Linked Selection"></i>
+                </div>
+            </div>
+            <div class="timeline-body">
+                <div class="timeline-ruler" id="timelineRuler">
+                    <div class="playhead-line" id="playhead"></div>
+                </div>
+                <div class="timeline-tracks" id="timelineTracks"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Animated Cursor -->
+    <div class="fake-cursor" id="fakeCursor">
+        <svg width="28" height="34" viewBox="0 0 28 34"><path d="M2 1L26 17L14 19L18 33L12 33L8 21L2 27Z" fill="#fff" stroke="#000" stroke-width="1.5"/></svg>
+        <div class="cursor-ring" id="cursorRing"></div>
+    </div>
+
+    <!-- Transition particle canvas -->
+    <canvas id="particle-burst" class="particle-burst"></canvas>
+
+    <!-- Viewport glow frame -->
+    <div class="viewport-glow" id="viewportGlow"></div>
+
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

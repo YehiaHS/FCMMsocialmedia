@@ -1,0 +1,10 @@
+# Word temp/lock files
+~$*.docx
+
+# Large binary files
+*.mp4
+*.ogg
+
+# Python cache
+__pycache__/
+*.pyc
