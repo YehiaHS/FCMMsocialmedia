@@ -783,6 +783,7 @@
         updateTimecode();
         initReelCarousel();
         initTarotDeck();
+        initSocialParallax();
     });
 
     /* ==================================================================
@@ -940,6 +941,68 @@
                     c.classList.remove('selected', 'dimmed');
                 });
             });
+        }
+    }
+
+    /* ==================================================================
+       SOCIAL PARALLAX AUTO-SCROLL (Slide 1)
+       ================================================================== */
+    function initSocialParallax() {
+        var tracks = [
+            { el: document.getElementById('spTrackL'), speed: 0.35, y: 0 },
+            { el: document.getElementById('spTrackR'), speed: 0.25, y: 0 }
+        ];
+
+        /* Duplicate inner content for seamless loop */
+        tracks.forEach(function (t) {
+            if (!t.el) return;
+            var inner = t.el.querySelector('.sp-scroll-inner');
+            if (!inner) return;
+            var clone = inner.cloneNode(true);
+            clone.classList.add('sp-scroll-clone');
+            t.el.appendChild(clone);
+            t.inner = inner;
+            t.clone = clone;
+            t.singleH = inner.scrollHeight;
+        });
+
+        var spAnimId = null;
+
+        function tick() {
+            tracks.forEach(function (t) {
+                if (!t.inner || !t.singleH) return;
+                t.y -= t.speed;
+                if (Math.abs(t.y) >= t.singleH + 10) {
+                    t.y = 0;
+                }
+                t.inner.style.transform = 'translateY(' + t.y + 'px)';
+                if (t.clone) t.clone.style.transform = 'translateY(' + t.y + 'px)';
+            });
+            spAnimId = requestAnimationFrame(tick);
+        }
+
+        /* Only run when slide 1 is active */
+        var observer = new MutationObserver(function () {
+            var slide1 = document.querySelector('.slide[data-index="1"]');
+            if (!slide1) return;
+            var isActive = slide1.classList.contains('active') ||
+                           slide1.classList.contains('drag-in-left') ||
+                           slide1.classList.contains('drag-in-right');
+            if (isActive && !spAnimId) {
+                spAnimId = requestAnimationFrame(tick);
+            } else if (!isActive && spAnimId) {
+                cancelAnimationFrame(spAnimId);
+                spAnimId = null;
+            }
+        });
+
+        var slide1 = document.querySelector('.slide[data-index="1"]');
+        if (slide1) {
+            observer.observe(slide1, { attributes: true, attributeFilter: ['class'] });
+            /* Start immediately if already active */
+            if (slide1.classList.contains('active')) {
+                spAnimId = requestAnimationFrame(tick);
+            }
         }
     }
 
