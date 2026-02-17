@@ -361,6 +361,132 @@
 
                         <!-- SLIDE 8 — LOOKING FORWARD -->
                         <div class="slide" data-index="8">
+                            <!-- Ramadan night background -->
+                            <div class="ramadan-bg" aria-hidden="true">
+                                <svg class="ramadan-scene" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice">
+                                    <!-- Night sky gradient -->
+                                    <defs>
+                                        <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+                                            <stop offset="0%" stop-color="rgba(245,190,60,0.25)"/>
+                                            <stop offset="100%" stop-color="transparent"/>
+                                        </radialGradient>
+                                        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#050a18"/>
+                                            <stop offset="40%" stop-color="#0a1628"/>
+                                            <stop offset="100%" stop-color="#0f1d35"/>
+                                        </linearGradient>
+                                        <linearGradient id="tableGrad" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#2a1a08"/>
+                                            <stop offset="100%" stop-color="#1a1004"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="1200" height="600" fill="url(#skyGrad)"/>
+
+                                    <!-- Stars -->
+                                    <circle cx="80" cy="60" r="1.2" fill="#fff" class="ram-star ram-s1"/>
+                                    <circle cx="200" cy="35" r="1" fill="#fff" class="ram-star ram-s2"/>
+                                    <circle cx="340" cy="80" r="1.4" fill="#fff" class="ram-star ram-s3"/>
+                                    <circle cx="480" cy="25" r="1" fill="#fff" class="ram-star ram-s1"/>
+                                    <circle cx="560" cy="70" r="1.3" fill="#fff" class="ram-star ram-s2"/>
+                                    <circle cx="700" cy="40" r="0.9" fill="#fff" class="ram-star ram-s3"/>
+                                    <circle cx="820" cy="55" r="1.5" fill="#fff" class="ram-star ram-s1"/>
+                                    <circle cx="950" cy="30" r="1.1" fill="#fff" class="ram-star ram-s2"/>
+                                    <circle cx="1060" cy="75" r="1.2" fill="#fff" class="ram-star ram-s3"/>
+                                    <circle cx="1140" cy="45" r="1" fill="#fff" class="ram-star ram-s1"/>
+                                    <circle cx="150" cy="110" r="0.8" fill="#fff" class="ram-star ram-s2"/>
+                                    <circle cx="430" cy="105" r="1" fill="#fff" class="ram-star ram-s3"/>
+                                    <circle cx="650" cy="95" r="0.7" fill="#fff" class="ram-star ram-s1"/>
+                                    <circle cx="1000" cy="100" r="0.9" fill="#fff" class="ram-star ram-s2"/>
+                                    <circle cx="280" cy="140" r="0.6" fill="#fff" class="ram-star ram-s3"/>
+                                    <circle cx="760" cy="120" r="0.8" fill="#fff" class="ram-star ram-s1"/>
+
+                                    <!-- Crescent moon + glow -->
+                                    <circle cx="920" cy="100" r="60" fill="url(#moonGlow)" class="ram-moon-glow"/>
+                                    <path d="M910 55 A35 35 0 1 0 910 145 A25 25 0 1 1 910 55Z" fill="#f5c842" class="ram-crescent"/>
+
+                                    <!-- Mosque silhouette -->
+                                    <g class="ram-mosque">
+                                        <!-- Central dome -->
+                                        <path d="M500 320 Q500 240 560 220 L600 200 L640 220 Q700 240 700 320Z" fill="#0a1225"/>
+                                        <!-- Minaret left -->
+                                        <rect x="420" y="200" width="18" height="120" fill="#0a1225"/>
+                                        <path d="M420 200 L429 170 L438 200Z" fill="#0a1225"/>
+                                        <circle cx="429" cy="165" r="4" fill="#f5c842" opacity="0.6" class="ram-minaret-light"/>
+                                        <!-- Minaret right -->
+                                        <rect x="762" y="200" width="18" height="120" fill="#0a1225"/>
+                                        <path d="M762 200 L771 170 L780 200Z" fill="#0a1225"/>
+                                        <circle cx="771" cy="165" r="4" fill="#f5c842" opacity="0.6" class="ram-minaret-light"/>
+                                        <!-- Side domes -->
+                                        <path d="M440 320 Q440 280 490 270 L510 260 L530 270 Q570 280 570 320Z" fill="#08101e"/>
+                                        <path d="M630 320 Q630 280 670 270 L690 260 L710 270 Q750 280 750 320Z" fill="#08101e"/>
+                                        <!-- Arched windows -->
+                                        <path d="M560 290 Q560 272 575 270 L585 268 L595 270 Q610 272 610 290 L610 310 L560 310Z" fill="#111b30" stroke="#f5c842" stroke-width="0.8" opacity="0.4"/>
+                                        <path d="M480 295 Q480 282 490 280 L497 278 L504 280 Q514 282 514 295 L514 310 L480 310Z" fill="#111b30" stroke="#f5c842" stroke-width="0.6" opacity="0.3"/>
+                                        <path d="M686 295 Q686 282 696 280 L703 278 L710 280 Q720 282 720 295 L720 310 L686 310Z" fill="#111b30" stroke="#f5c842" stroke-width="0.6" opacity="0.3"/>
+                                    </g>
+
+                                    <!-- Ground / horizon -->
+                                    <rect x="0" y="320" width="1200" height="280" fill="#0a1225"/>
+
+                                    <!-- Iftar table scene (silhouettes) -->
+                                    <g class="ram-iftar" opacity="0.55">
+                                        <!-- Long table -->
+                                        <rect x="200" y="420" width="800" height="12" rx="3" fill="url(#tableGrad)" stroke="#3a2510" stroke-width="1"/>
+                                        <!-- Table legs -->
+                                        <rect x="240" y="432" width="6" height="50" fill="#2a1a08"/>
+                                        <rect x="954" y="432" width="6" height="50" fill="#2a1a08"/>
+
+                                        <!-- Warm light on table -->
+                                        <ellipse cx="600" cy="418" rx="300" ry="30" fill="rgba(245,180,60,0.06)"/>
+
+                                        <!-- Lantern centerpiece -->
+                                        <rect x="588" y="395" width="24" height="25" rx="4" fill="none" stroke="#f5c842" stroke-width="1.2"/>
+                                        <line x1="600" y1="388" x2="600" y2="395" stroke="#f5c842" stroke-width="1"/>
+                                        <circle cx="600" cy="385" r="3" fill="none" stroke="#f5c842" stroke-width="0.8"/>
+                                        <circle cx="600" cy="407" r="3" fill="#f5c842" opacity="0.5" class="ram-candle"/>
+
+                                        <!-- Dishes on table -->
+                                        <ellipse cx="380" cy="416" rx="25" ry="6" fill="#1a1a2e" stroke="#333" stroke-width="0.8"/>
+                                        <ellipse cx="500" cy="416" rx="20" ry="5" fill="#1a1a2e" stroke="#333" stroke-width="0.8"/>
+                                        <ellipse cx="700" cy="416" rx="25" ry="6" fill="#1a1a2e" stroke="#333" stroke-width="0.8"/>
+                                        <ellipse cx="820" cy="416" rx="20" ry="5" fill="#1a1a2e" stroke="#333" stroke-width="0.8"/>
+
+                                        <!-- People silhouettes (seated) -->
+                                        <!-- Person 1 -->
+                                        <circle cx="300" cy="380" r="12" fill="#0d1525"/>
+                                        <path d="M282 420 Q282 395 300 395 Q318 395 318 420" fill="#0d1525"/>
+                                        <!-- Person 2 -->
+                                        <circle cx="420" cy="378" r="12" fill="#0d1525"/>
+                                        <path d="M402 420 Q402 393 420 393 Q438 393 438 420" fill="#0d1525"/>
+                                        <!-- Person 3 -->
+                                        <circle cx="540" cy="380" r="12" fill="#0d1525"/>
+                                        <path d="M522 420 Q522 395 540 395 Q558 395 558 420" fill="#0d1525"/>
+                                        <!-- Person 4 -->
+                                        <circle cx="660" cy="378" r="12" fill="#0d1525"/>
+                                        <path d="M642 420 Q642 393 660 393 Q678 393 678 420" fill="#0d1525"/>
+                                        <!-- Person 5 -->
+                                        <circle cx="780" cy="380" r="12" fill="#0d1525"/>
+                                        <path d="M762 420 Q762 395 780 395 Q798 395 798 420" fill="#0d1525"/>
+                                        <!-- Person 6 -->
+                                        <circle cx="900" cy="378" r="12" fill="#0d1525"/>
+                                        <path d="M882 420 Q882 393 900 393 Q918 393 918 420" fill="#0d1525"/>
+                                    </g>
+
+                                    <!-- Floating lanterns in sky -->
+                                    <g class="ram-sky-lantern ram-sl1">
+                                        <rect x="160" y="160" width="16" height="22" rx="4" fill="none" stroke="#f5c842" stroke-width="0.8" opacity="0.4"/>
+                                        <circle cx="168" cy="171" r="2.5" fill="#f5c842" opacity="0.35"/>
+                                    </g>
+                                    <g class="ram-sky-lantern ram-sl2">
+                                        <rect x="1020" y="140" width="14" height="20" rx="4" fill="none" stroke="#f5c842" stroke-width="0.8" opacity="0.35"/>
+                                        <circle cx="1027" cy="150" r="2" fill="#f5c842" opacity="0.3"/>
+                                    </g>
+                                    <g class="ram-sky-lantern ram-sl3">
+                                        <rect x="350" y="180" width="12" height="18" rx="3" fill="none" stroke="#f5c842" stroke-width="0.7" opacity="0.3"/>
+                                        <circle cx="356" cy="189" r="2" fill="#f5c842" opacity="0.25"/>
+                                    </g>
+                                </svg>
+                            </div>
                             <div class="slide-content">
                                 <div class="anim-el"><span class="section-tag">08 — LOOKING FORWARD</span></div>
                                 <div class="anim-el">

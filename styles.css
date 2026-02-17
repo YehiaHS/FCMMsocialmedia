@@ -1784,6 +1784,102 @@ body * { cursor: none !important; }
 .tarot-hint i { margin-right: 5px; }
 
 /* ===== NEXT ITEMS ===== */
+/* ===== RAMADAN BACKGROUND (Slide 8) ===== */
+.ramadan-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 1.8s ease;
+}
+.slide.active .ramadan-bg { opacity: 1; }
+.ramadan-scene { width: 100%; height: 100%; display: block; }
+
+/* Stars twinkle */
+.ram-star { opacity: 0; }
+.slide.active .ram-star { animation: ramTwinkle 3s ease-in-out infinite; }
+.ram-s1 { animation-delay: 0s !important; }
+.ram-s2 { animation-delay: 1s !important; }
+.ram-s3 { animation-delay: 2s !important; }
+@keyframes ramTwinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* Moon glow pulse */
+.ram-moon-glow { opacity: 0; }
+.slide.active .ram-moon-glow { animation: ramMoonGlow 5s 0.5s ease-in-out infinite; }
+@keyframes ramMoonGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.08); }
+}
+
+/* Crescent fade in */
+.ram-crescent { opacity: 0; }
+.slide.active .ram-crescent { animation: ramCrescentIn 1.5s 0.3s ease-out forwards; }
+@keyframes ramCrescentIn {
+    0% { opacity: 0; transform: translateY(-10px) scale(0.8); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Mosque rise */
+.ram-mosque { opacity: 0; transform: translateY(20px); }
+.slide.active .ram-mosque { animation: ramMosqueRise 1.8s 0.4s ease-out forwards; }
+@keyframes ramMosqueRise {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Minaret lights pulse */
+.ram-minaret-light { opacity: 0; }
+.slide.active .ram-minaret-light { animation: ramMinLight 2.5s 1.5s ease-in-out infinite; }
+@keyframes ramMinLight {
+    0%, 100% { opacity: 0.3; r: 3; }
+    50% { opacity: 0.8; r: 5; }
+}
+
+/* Iftar scene fade */
+.ram-iftar { opacity: 0; }
+.slide.active .ram-iftar { animation: ramIftarIn 2s 0.8s ease-out forwards; }
+@keyframes ramIftarIn {
+    0% { opacity: 0; }
+    100% { opacity: 0.55; }
+}
+
+/* Candle flicker */
+.ram-candle { opacity: 0; }
+.slide.active .ram-candle { animation: ramCandle 1.8s 1.2s ease-in-out infinite; }
+@keyframes ramCandle {
+    0%, 100% { opacity: 0.3; r: 2.5; }
+    30% { opacity: 0.7; r: 3.5; }
+    70% { opacity: 0.45; r: 3; }
+}
+
+/* Floating sky lanterns drift up */
+.ram-sky-lantern { opacity: 0; }
+.slide.active .ram-sky-lantern { animation: ramLanternDrift 12s ease-in-out infinite; }
+.slide.active .ram-sl1 { animation-delay: 0.5s; }
+.slide.active .ram-sl2 { animation-delay: 3s; }
+.slide.active .ram-sl3 { animation-delay: 6s; }
+@keyframes ramLanternDrift {
+    0% { opacity: 0; transform: translateY(0); }
+    15% { opacity: 0.6; }
+    85% { opacity: 0.4; }
+    100% { opacity: 0; transform: translateY(-60px) translateX(15px); }
+}
+
+/* Make forward cards semi-transparent bg for readability */
+.slide[data-index="8"] .fwd-card {
+    background: rgba(10, 18, 37, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.slide[data-index="8"] .fwd-card:hover {
+    background: rgba(10, 18, 37, 0.8);
+}
+
 /* ===== FORWARD CARDS (Slide 8) ===== */
 .fwd-grid {
     display: grid;
