@@ -387,6 +387,7 @@
             current = index;
             updateTimeline();
             updateTimecode();
+            if (index === 7) setTimeout(dealTarotCards, 650);
 
             /* Clean after animation */
             setTimeout(function () {
@@ -772,11 +773,167 @@
         updateTimeline();
         updateTimecode();
         initReelCarousel();
+        initTarotDeck();
     });
 
     /* ==================================================================
        REEL CAROUSEL
        ================================================================== */
+    /* ==================================================================
+       TAROT DECK (Slide 7)
+       ================================================================== */
+    var TAROT_DATA = [
+        {
+            num: 'VII', name: 'THE ARTIFICER', sub: 'Technical Skills',
+            lore: 'Precision crafted through hours in the edit suite.',
+            skills: [
+                'Adobe Premiere Pro — multi-track editing & colour grade',
+                'CapCut — trend-driven short-form assembly',
+                'DSLR & mirrorless — exposure, focus, framing',
+                'Audio sync, j-cuts, l-cuts, beat matching',
+                'Export pipelines for social platforms'
+            ]
+        },
+        {
+            num: 'III', name: 'THE ARTIST', sub: 'Creative Skills',
+            lore: 'Storytelling is the art of making every frame count.',
+            skills: [
+                'Narrative structure: hook, build, resolve',
+                'Beat-sync editing for emotional impact',
+                'Trend identification for viral short-form',
+                'Thumbnail & caption copywriting',
+                'Visual rhythm and pacing judgment'
+            ]
+        },
+        {
+            num: 'XI', name: 'THE COMMANDER', sub: 'Leadership Skills',
+            lore: 'A strong crew needs a steady hand at the helm.',
+            skills: [
+                'Led a 3-person on-location production crew',
+                'Scheduled shoots around campus availability',
+                'Delegated roles: camera, sound, direction',
+                'Managed post-production handoffs & deadlines',
+                'Designed repeatable content workflows'
+            ]
+        },
+        {
+            num: 'XV', name: 'THE DIPLOMAT', sub: 'Professional Skills',
+            lore: 'Real-world media demands more than technical skill.',
+            skills: [
+                'Navigated institutional filming permissions',
+                'Obtained informed consent from all subjects',
+                'Diplomatic communication with faculty & students',
+                'On-location problem-solving under time pressure',
+                'Met broadcast-quality delivery standards'
+            ]
+        }
+    ];
+
+    function dealTarotCards() {
+        var cards = document.querySelectorAll('.tc');
+        var hand  = document.getElementById('tarotHand');
+        var deckVis = document.getElementById('tarotDeckVis');
+        var detail = document.getElementById('tarotDetail');
+        if (!cards.length || !hand) return;
+
+        /* Reset */
+        cards.forEach(function (c) {
+            c.classList.remove('dealt', 'flipped', 'selected', 'dimmed');
+            c.style.transitionDelay = '0s';
+        });
+        if (detail) detail.classList.remove('open');
+        if (deckVis) deckVis.classList.remove('gone');
+        hand.classList.remove('resting', 'dealing');
+        void hand.offsetWidth; /* reflow */
+
+        /* Start deal animation on hand */
+        hand.classList.add('dealing');
+
+        /* Stagger cards: dealt → then flipped */
+        cards.forEach(function (card, i) {
+            var dealDelay = 350 + i * 380;
+            setTimeout(function () {
+                card.classList.add('dealt');
+            }, dealDelay);
+            setTimeout(function () {
+                card.classList.add('flipped');
+            }, dealDelay + 420);
+        });
+
+        /* Hide deck stubs after last card deals */
+        setTimeout(function () {
+            if (deckVis) deckVis.classList.add('gone');
+        }, 350 + 4 * 380);
+
+        /* Hand retreats */
+        setTimeout(function () {
+            hand.classList.add('resting');
+        }, 3500);
+    }
+
+    function initTarotDeck() {
+        document.querySelectorAll('.tc').forEach(function (card) {
+            /* Apply accent CSS variable from data attribute */
+            var accent = card.getAttribute('data-accent') || '#c9a84c';
+            card.style.setProperty('--tc-accent', accent);
+
+            card.addEventListener('click', function () {
+                var idx = parseInt(card.getAttribute('data-tarot'));
+                var detail  = document.getElementById('tarotDetail');
+                var tdNum   = document.getElementById('tdNumeral');
+                var tdName  = document.getElementById('tdName');
+                var tdSub   = document.getElementById('tdSub');
+                var tdLore  = document.getElementById('tdLore');
+                var tdList  = document.getElementById('tdList');
+
+                /* Deselect if clicking the same card */
+                if (card.classList.contains('selected')) {
+                    card.classList.remove('selected');
+                    document.querySelectorAll('.tc.dimmed').forEach(function (c) { c.classList.remove('dimmed'); });
+                    if (detail) detail.classList.remove('open');
+                    return;
+                }
+
+                /* Select this card, dim others */
+                document.querySelectorAll('.tc').forEach(function (c) {
+                    c.classList.remove('selected', 'dimmed');
+                    if (c !== card) c.classList.add('dimmed');
+                });
+                card.classList.add('selected');
+
+                /* Populate detail panel */
+                var data = TAROT_DATA[idx];
+                if (data && detail) {
+                    detail.style.setProperty('--td-accent', accent);
+                    if (tdNum)  tdNum.textContent  = data.num;
+                    if (tdName) tdName.textContent = data.name;
+                    if (tdSub)  tdSub.textContent  = data.sub;
+                    if (tdLore) tdLore.textContent = data.lore;
+                    if (tdList) {
+                        tdList.innerHTML = '';
+                        data.skills.forEach(function (s) {
+                            var li = document.createElement('li');
+                            li.textContent = s;
+                            tdList.appendChild(li);
+                        });
+                    }
+                    detail.classList.add('open');
+                }
+            });
+        });
+
+        /* Close button */
+        var closeBtn = document.getElementById('tdClose');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                document.getElementById('tarotDetail').classList.remove('open');
+                document.querySelectorAll('.tc').forEach(function (c) {
+                    c.classList.remove('selected', 'dimmed');
+                });
+            });
+        }
+    }
+
     function initReelCarousel() {
         var track = document.getElementById('reelTrack');
         var prevBtn = document.getElementById('reelPrev');
