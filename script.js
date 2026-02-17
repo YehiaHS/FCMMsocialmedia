@@ -784,6 +784,7 @@
         initReelCarousel();
         initTarotDeck();
         initSocialParallax();
+        initHandwriteSvg();
     });
 
     /* ==================================================================
@@ -947,6 +948,40 @@
     /* ==================================================================
        SOCIAL PARALLAX AUTO-SCROLL (Slide 1)
        ================================================================== */
+    /* ==================================================================\n       HANDWRITE SVG STROKE (Slide 9)\n       ================================================================== */
+    function initHandwriteSvg() {
+        var hwText = document.getElementById('hwText');
+        var hwSvg  = document.getElementById('hwSvg');
+        var hwWrap = document.getElementById('hwWrap');
+        if (!hwText || !hwSvg || !hwWrap) return;
+
+        /* Wait a frame so font is loaded and text has dimensions */
+        requestAnimationFrame(function () {
+            var w = hwWrap.offsetWidth;
+            var h = hwWrap.offsetHeight;
+            if (!w || !h) return;
+
+            hwSvg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+            hwSvg.setAttribute('width', w);
+            hwSvg.setAttribute('height', h);
+
+            var style = getComputedStyle(hwText);
+            var fontSize = parseFloat(style.fontSize);
+
+            var svgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            svgText.setAttribute('x', '0');
+            svgText.setAttribute('y', String(fontSize * 0.82));
+            svgText.setAttribute('font-size', String(fontSize));
+            svgText.textContent = 'Thank You!';
+            hwSvg.appendChild(svgText);
+
+            /* Measure path length for dash animation */
+            var len = svgText.getComputedTextLength() * 3.2;
+            svgText.style.setProperty('--dash-len', String(Math.ceil(len)));
+            hwSvg.style.setProperty('--dash-len', String(Math.ceil(len)));
+        });
+    }
+
     function initSocialParallax() {
         var tracks = [
             { el: document.getElementById('spTrackL'), speed: 0.35, y: 0 },
