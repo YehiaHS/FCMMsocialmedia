@@ -1871,6 +1871,16 @@ body * { cursor: none !important; }
     transform: translateY(-2px);
 }
 .end-link i { font-size: 1rem; }
+.end-link.drive-link {
+    background: rgba(0, 164, 255, 0.12);
+    border-color: var(--pp-accent);
+    color: var(--pp-accent);
+    font-weight: 600;
+}
+.end-link.drive-link:hover {
+    background: rgba(0, 164, 255, 0.22);
+    box-shadow: 0 0 28px rgba(0, 164, 255, 0.2);
+}
 .end-name {
     font-family: var(--font-mono);
     font-size: 0.8rem;
