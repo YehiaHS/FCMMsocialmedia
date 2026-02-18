@@ -2739,8 +2739,8 @@ body * { cursor: none !important; }
     font-family: 'Comic Sans MS', 'Comic Sans', cursive;
     font-weight: 700;
     fill: none;
-    stroke: #222;
-    stroke-width: 1.6;
+    stroke: #000;
+    stroke-width: 1.8;
     stroke-dasharray: var(--dash-len, 2000);
     stroke-dashoffset: var(--dash-len, 2000);
     stroke-linecap: round;
