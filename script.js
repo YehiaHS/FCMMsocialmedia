@@ -19,6 +19,7 @@
     var transitioning = false;
     var autoPlaying = false;
     var autoTimer = null;
+    var tarotStep = -1;   /* -1 = no card shown; 0,1,2 = card index currently open */
     var mouseX = window.innerWidth / 2;
     var mouseY = window.innerHeight / 2;
 
@@ -421,13 +422,53 @@
                 setTimeout(function () {
                     nextSlide.classList.remove('drag-in-left', 'drag-in-right');
                     transitioning = false;
+                    /* Reset tarot step whenever we land on / leave slide 7 */
+                    tarotStep = -1;
                 }, TRANSITION_MS);
             });
         });
     }
 
-    function next() { goTo(current + 1); }
-    function prev() { goTo(current - 1); }
+    /* Open (or close) a tarot card by index programmatically */
+    function openTarotCard(idx) {
+        var cards = document.querySelectorAll('.tc');
+        if (!cards.length) return;
+        if (idx === -1) {
+            /* close all */
+            cards.forEach(function (c) { c.classList.remove('selected', 'dimmed'); });
+            var det = document.getElementById('tarotDetail');
+            if (det) det.classList.remove('open');
+            return;
+        }
+        var card = cards[idx];
+        if (card) card.click();
+    }
+
+    function next() {
+        if (current === 7) {
+            var cards = document.querySelectorAll('.tc');
+            var total = cards.length;        /* typically 3 */
+            if (tarotStep < total - 1) {
+                tarotStep++;
+                openTarotCard(tarotStep);
+                return;
+            }
+            /* All cards visited — close detail and advance */
+            openTarotCard(-1);
+            tarotStep = -1;
+        }
+        goTo(current + 1);
+    }
+    function prev() {
+        if (current === 7) {
+            if (tarotStep >= 0) {
+                openTarotCard(-1);
+                tarotStep = -1;
+                return;   /* stay on slide 7 with no card open */
+            }
+        }
+        goTo(current - 1);
+    }
 
     function toggleAutoPlay() {
         autoPlaying = !autoPlaying;
@@ -437,6 +478,16 @@
             btn.classList.add('playing');
             icon.className = 'fas fa-pause';
             autoTimer = setInterval(function () {
+                if (current === 7) {
+                    var cards = document.querySelectorAll('.tc');
+                    if (tarotStep < cards.length - 1) {
+                        tarotStep++;
+                        openTarotCard(tarotStep);
+                        return;
+                    }
+                    openTarotCard(-1);
+                    tarotStep = -1;
+                }
                 if (current < TOTAL - 1) goTo(current + 1, true);
                 else toggleAutoPlay();
             }, 3500);
