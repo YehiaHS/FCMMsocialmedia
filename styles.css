@@ -840,6 +840,7 @@ body * { cursor: none !important; }
     transform: translateX(0) scale(1);
     transform-style: preserve-3d;
     will-change: transform, opacity;
+    contain: layout style;
 }
 .slide.active {
     opacity: 1;
@@ -918,21 +919,24 @@ body * { cursor: none !important; }
     text-align: center;
 }
 
+/* Pause ALL animations inside non-active slides for GPU savings */
+.slide:not(.active):not(.drag-out-left):not(.drag-out-right):not(.drag-in-left):not(.drag-in-right) * {
+    animation-play-state: paused !important;
+}
+
 /* Staggered entrance animations — more dramatic */
 .anim-el {
     opacity: 0;
     transform: translateY(30px) scale(0.96);
-    filter: blur(4px);
     transition: opacity 0.6s var(--ease-smooth),
-                transform 0.6s var(--ease-smooth),
-                filter 0.6s var(--ease-smooth);
+                transform 0.6s var(--ease-smooth);
+    will-change: transform, opacity;
 }
 .slide.active .anim-el,
 .slide.drag-in-left .anim-el,
 .slide.drag-in-right .anim-el {
     opacity: 1;
     transform: translateY(0) scale(1);
-    filter: blur(0);
 }
 
 /* ===================================================================
@@ -1387,6 +1391,8 @@ body * { cursor: none !important; }
     min-width: 0;
     overflow: hidden;
     transform-style: preserve-3d;
+    will-change: transform;
+    contain: layout paint;
     mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
 }
@@ -1416,9 +1422,14 @@ body * { cursor: none !important; }
     flex-direction: column;
     gap: 12px;
     animation: wfScrollDown 36.7s linear infinite;
+    will-change: transform;
 }
 .wf-scroll-rev {
     animation-name: wfScrollUp;
+}
+/* Pause waterfall when slide is not active to save GPU */
+.slide:not(.active) .wf-scroll {
+    animation-play-state: paused;
 }
 @keyframes wfScrollDown {
     0% { transform: translateY(0); }
@@ -1436,6 +1447,7 @@ body * { cursor: none !important; }
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.08);
     flex-shrink: 0;
+    contain: layout paint;
 }
 .wf-thumb img {
     width: 100%;
@@ -1443,6 +1455,7 @@ body * { cursor: none !important; }
     object-fit: cover;
     display: block;
     filter: none;
+    content-visibility: auto;
 }
 
 /* Make portfolio cards readable over waterfall */
@@ -2534,3 +2547,234 @@ body * { cursor: none !important; }
     .ws-tab.active { display: block; }
     .slide-content { padding: 1rem 1.5rem; }
 }
+
+/* ===================================================================
+   MS PAINT TRANSITION OVERLAY
+   =================================================================== */
+.paint-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 150000;
+    opacity: 0;
+    pointer-events: none;
+    font-family: 'Segoe UI', 'Inter', sans-serif;
+    transition: opacity 0.5s ease;
+}
+.paint-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.paint-desktop {
+    width: 100%; height: 100%;
+    background: linear-gradient(145deg, #1a3a5c 0%, #0f2847 30%, #1b4976 60%, #0d2240 100%);
+    position: relative;
+    overflow: hidden;
+}
+.paint-desktop::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 120% 80% at 50% 110%, rgba(0,120,215,0.25) 0%, transparent 70%);
+}
+
+/* Paint Window */
+.paint-window {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 820px; max-width: 92vw;
+    height: 560px; max-height: 78vh;
+    background: #f3f3f3;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 12px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.35s ease;
+}
+.paint-window.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+.paint-window.maximized {
+    width: 100vw !important; max-width: 100vw;
+    height: calc(100vh - 48px) !important; max-height: calc(100vh - 48px);
+    top: 0;
+    left: 0;
+    transform: translate(0, 0) scale(1) !important;
+    border-radius: 0;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.paint-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+    padding: 0 6px;
+    flex-shrink: 0;
+}
+.paint-titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #333;
+    font-weight: 500;
+}
+.paint-titlebar-right {
+    display: flex;
+    gap: 2px;
+}
+.paint-btn {
+    width: 28px; height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #555;
+    border-radius: 4px;
+    line-height: 1;
+}
+.paint-btn:hover { background: rgba(0,0,0,0.06); }
+.paint-close:hover { background: #e81123; color: #fff; }
+
+.paint-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    background: #fafafa;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+    overflow-x: auto;
+}
+.paint-tool-group {
+    display: flex;
+    gap: 2px;
+}
+.paint-tool-item {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #444;
+    white-space: nowrap;
+}
+.paint-tool-item.active {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+.paint-tool-sep {
+    width: 1px;
+    height: 24px;
+    background: #ddd;
+    flex-shrink: 0;
+}
+.paint-colors {
+    display: flex;
+    gap: 3px;
+    margin-left: auto;
+}
+.paint-swatch {
+    width: 18px; height: 18px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.15);
+}
+.paint-swatch[data-border] {
+    border: 1px solid #ccc;
+}
+
+.paint-canvas {
+    flex: 1;
+    background: #fff;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Thank You content inside Paint */
+.paint-thank-you {
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.8s ease, transform 0.6s ease;
+}
+.paint-thank-you.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+.paint-ty-text {
+    font-family: 'Comic Sans MS', 'Segoe UI', cursive, sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+.paint-ty-text .paint-letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px) rotate(-5deg);
+    animation: paintLetterIn 0.4s ease forwards;
+}
+@keyframes paintLetterIn {
+    to { opacity: 1; transform: translateY(0) rotate(0); }
+}
+.paint-ty-scribble {
+    width: 200px;
+    margin: 0 auto 1.5rem;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.8s;
+}
+.paint-ty-scribble.visible { opacity: 1; }
+.paint-ty-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    transition: opacity 0.6s ease 1.2s;
+}
+.paint-ty-links.visible { opacity: 1; }
+.paint-ty-link {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: #1565c0;
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background 0.2s;
+}
+.paint-ty-link:hover { background: #bbdefb; }
+.paint-ty-name {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    color: #666;
+    font-family: 'Segoe UI', sans-serif;
+    opacity: 0;
+    transition: opacity 0.6s ease 1.6s;
+}
+.paint-ty-name.visible { opacity: 1; }
+.paint-ty-doodles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+.paint-ty-doodles svg {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.paint-ty-doodles.visible svg { opacity: 1; }

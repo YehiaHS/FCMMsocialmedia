@@ -342,6 +342,24 @@
     }
 
     function performDragTransition(index, direction) {
+        /* Intercept navigation to slide 9 — run Paint transition instead */
+        if (index === 9 && current === 8) {
+            runPaintTransition();
+            return;
+        }
+
+        /* Going back from Paint overlay → restore Premiere shell */
+        if (current === 9) {
+            var overlay = document.getElementById('paintOverlay');
+            var shell = document.querySelector('.premiere-shell');
+            var fakeCur = document.getElementById('fakeCursor');
+            if (overlay && overlay.classList.contains('active')) {
+                overlay.classList.remove('active');
+                if (shell) shell.style.opacity = '1';
+                if (fakeCur) fakeCur.style.display = '';
+            }
+        }
+
         var prevSlide = slides[current];
         var nextSlide = slides[index];
 
@@ -974,6 +992,146 @@
                     step++;
                     runStep();
                 });
+            }
+        }
+        runStep();
+    }
+
+    /* ==================================================================
+       MS PAINT TRANSITION (Slide 8 → 9)
+       ================================================================== */
+    function runPaintTransition() {
+        var overlay       = document.getElementById('paintOverlay');
+        var pcursor       = document.getElementById('paintCursor');
+        var paintIcon     = document.getElementById('paintDesktopPaintIcon');
+        var paintWindow   = document.getElementById('paintWindow');
+        var paintCanvas   = document.getElementById('paintCanvas');
+        var shell         = document.querySelector('.premiere-shell');
+        var fakeCursor    = document.getElementById('fakeCursor');
+        var timeEl        = document.getElementById('paintTaskbarTime');
+        var dateEl        = document.getElementById('paintTaskbarDate');
+
+        if (!overlay) { transitioning = false; return; }
+
+        /* Set clock */
+        var now = new Date();
+        if (timeEl) timeEl.textContent = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+        if (dateEl) dateEl.textContent = now.getDate().toString().padStart(2,'0') + '/' + (now.getMonth()+1).toString().padStart(2,'0') + '/' + now.getFullYear();
+
+        /* Hide main cursor */
+        if (fakeCursor) fakeCursor.style.display = 'none';
+
+        /* Position overlay cursor center */
+        pcursor.style.left = '50%';
+        pcursor.style.top = '50%';
+        pcursor.classList.remove('moving', 'clicking');
+
+        function moveTo(el, cb) {
+            var rect = el.getBoundingClientRect();
+            pcursor.classList.add('moving');
+            pcursor.style.left = (rect.left + rect.width / 2) + 'px';
+            pcursor.style.top = (rect.top + rect.height / 2) + 'px';
+            setTimeout(cb, 650);
+        }
+
+        function click(cb) {
+            pcursor.classList.add('clicking');
+            setTimeout(function () {
+                pcursor.classList.remove('clicking');
+                if (cb) cb();
+            }, 200);
+        }
+
+        var seq = [
+            /* 0 — Show overlay (Premiere "closes" → desktop visible) */
+            function (next) {
+                overlay.classList.add('active');
+                if (shell) shell.style.opacity = '0';
+                setTimeout(next, 700);
+            },
+
+            /* 1 — Move cursor to Paint icon */
+            function (next) { moveTo(paintIcon, next); },
+
+            /* 2 — Highlight & double-click Paint */
+            function (next) {
+                paintIcon.classList.add('highlight');
+                click(function () {
+                    setTimeout(function () { click(next); }, 120);
+                });
+            },
+
+            /* 3 — Open Paint window */
+            function (next) {
+                paintIcon.classList.remove('highlight');
+                paintWindow.classList.add('visible');
+                setTimeout(next, 500);
+            },
+
+            /* 4 — Maximize Paint window */
+            function (next) {
+                paintWindow.classList.add('maximized');
+                pcursor.style.opacity = '0';
+                setTimeout(next, 600);
+            },
+
+            /* 5 — Render Thank You content inside Paint canvas */
+            function (next) {
+                var letters = 'Thank You!'.split('');
+                var html = '<div class="paint-thank-you" id="paintThankYou">';
+                html += '<div class="paint-ty-doodles" id="paintDoodles">';
+                html += '<svg style="top:10%;left:8%;width:60px" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="#e53935" stroke-width="3"/></svg>';
+                html += '<svg style="top:15%;right:12%;width:50px" viewBox="0 0 50 50"><rect x="5" y="5" width="40" height="40" fill="none" stroke="#1e88e5" stroke-width="3" rx="4"/></svg>';
+                html += '<svg style="bottom:20%;left:15%;width:45px" viewBox="0 0 45 45"><polygon points="22.5,2 28,17 44,17 31,27 36,43 22.5,33 9,43 14,27 1,17 17,17" fill="none" stroke="#fdd835" stroke-width="2.5"/></svg>';
+                html += '<svg style="bottom:12%;right:10%;width:55px" viewBox="0 0 55 55"><path d="M27.5 5 C45 5, 50 25, 27.5 50 C5 25, 10 5, 27.5 5Z" fill="none" stroke="#e91e63" stroke-width="2.5"/></svg>';
+                html += '<svg style="top:40%;left:5%;width:40px" viewBox="0 0 40 40"><path d="M5 35 Q20 5 35 35" fill="none" stroke="#43a047" stroke-width="3" stroke-linecap="round"/></svg>';
+                html += '</div>';
+                html += '<div class="paint-ty-text" id="paintTyText">';
+                letters.forEach(function (l, i) {
+                    var d = (i * 0.06 + 0.3).toFixed(2);
+                    html += '<span class="paint-letter" style="animation-delay:' + d + 's">' + (l === ' ' ? '&nbsp;' : l) + '</span>';
+                });
+                html += '</div>';
+                html += '<svg class="paint-ty-scribble" id="paintScribble" viewBox="0 0 200 20"><path d="M10 10 Q50 2 100 10 Q150 18 190 10" fill="none" stroke="#e53935" stroke-width="3" stroke-linecap="round" stroke-dasharray="200" stroke-dashoffset="200"><animate attributeName="stroke-dashoffset" to="0" dur="0.8s" begin="0.8s" fill="freeze"/></path></svg>';
+                html += '<div class="paint-ty-links" id="paintLinks">';
+                html += '<a href="https://drive.google.com/drive/folders/168FfG7xOKQQrY6Mei916_ZTk9QFS35Qo?usp=sharing" target="_blank" class="paint-ty-link"><i class="fas fa-folder-open"></i> Google Drive Portfolio</a>';
+                html += '<a href="https://www.tiktok.com/@cmm.bue" target="_blank" class="paint-ty-link"><i class="fab fa-tiktok"></i> @cmm.bue</a>';
+                html += '<a href="https://bue.edu.eg" target="_blank" class="paint-ty-link"><i class="fas fa-globe"></i> bue.edu.eg</a>';
+                html += '</div>';
+                html += '<p class="paint-ty-name" id="paintName">Yehia Salem · 229916</p>';
+                html += '</div>';
+                paintCanvas.innerHTML = html;
+
+                /* Trigger animations */
+                requestAnimationFrame(function () {
+                    var ty = document.getElementById('paintThankYou');
+                    var doodles = document.getElementById('paintDoodles');
+                    var scribble = document.getElementById('paintScribble');
+                    var links = document.getElementById('paintLinks');
+                    var name = document.getElementById('paintName');
+                    if (ty) ty.classList.add('visible');
+                    setTimeout(function () {
+                        if (doodles) doodles.classList.add('visible');
+                        if (scribble) scribble.classList.add('visible');
+                    }, 500);
+                    setTimeout(function () { if (links) links.classList.add('visible'); }, 1200);
+                    setTimeout(function () { if (name) name.classList.add('visible'); }, 1600);
+                });
+
+                /* Update internal slide state */
+                slides[current].classList.remove('active');
+                slides[current].style.opacity = '';
+                current = 9;
+                updateTimeline();
+                updateTimecode();
+                transitioning = false;
+            }
+        ];
+
+        var step = 0;
+        function runStep() {
+            if (step < seq.length) {
+                seq[step](function () { step++; runStep(); });
             }
         }
         runStep();
