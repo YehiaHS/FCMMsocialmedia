@@ -683,6 +683,19 @@
        EVENTS
        ================================================================== */
     function setupEvents() {
+        /* Auto-fullscreen on first user gesture (browsers require interaction) */
+        function goFullscreen() {
+            var el = document.documentElement;
+            var rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+            if (rfs && !document.fullscreenElement && !document.webkitFullscreenElement) {
+                rfs.call(el).catch(function(){});
+            }
+            document.removeEventListener('click', goFullscreen);
+            document.removeEventListener('keydown', goFullscreen);
+        }
+        document.addEventListener('click', goFullscreen, { once: true });
+        document.addEventListener('keydown', goFullscreen);
+
         document.addEventListener('keydown', function (e) {
             switch (e.key) {
                 case 'ArrowRight': case 'ArrowDown': case 'PageDown':
