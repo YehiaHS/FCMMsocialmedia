@@ -1068,31 +1068,41 @@
                 setTimeout(next, 500);
             },
 
-            /* 4 — Maximize Paint window */
+            /* 4 — Maximize Paint window; keep cursor visible, move into canvas area */
             function (next) {
                 paintWindow.classList.add('maximized');
-                pcursor.style.opacity = '0';
-                setTimeout(next, 600);
+                /* Keep cursor visible — move it to center of canvas to simulate drawing */
+                pcursor.classList.add('moving');
+                pcursor.style.top  = '55%';
+                pcursor.style.left = '50%';
+                setTimeout(next, 700);
             },
 
             /* 5 — Render Thank You content inside Paint canvas */
             function (next) {
-                var letters = 'Thank You!'.split('');
+                /* Build HTML: doodles in corners only, SVG-stroke hw-wrap title, links, name */
                 var html = '<div class="paint-thank-you" id="paintThankYou">';
+
+                /* Doodles — corner-only, each gets a BEM modifier class */
                 html += '<div class="paint-ty-doodles" id="paintDoodles">';
-                html += '<svg style="top:10%;left:8%;width:60px" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="#e53935" stroke-width="3"/></svg>';
-                html += '<svg style="top:15%;right:12%;width:50px" viewBox="0 0 50 50"><rect x="5" y="5" width="40" height="40" fill="none" stroke="#1e88e5" stroke-width="3" rx="4"/></svg>';
-                html += '<svg style="bottom:20%;left:15%;width:45px" viewBox="0 0 45 45"><polygon points="22.5,2 28,17 44,17 31,27 36,43 22.5,33 9,43 14,27 1,17 17,17" fill="none" stroke="#fdd835" stroke-width="2.5"/></svg>';
-                html += '<svg style="bottom:12%;right:10%;width:55px" viewBox="0 0 55 55"><path d="M27.5 5 C45 5, 50 25, 27.5 50 C5 25, 10 5, 27.5 5Z" fill="none" stroke="#e91e63" stroke-width="2.5"/></svg>';
-                html += '<svg style="top:40%;left:5%;width:40px" viewBox="0 0 40 40"><path d="M5 35 Q20 5 35 35" fill="none" stroke="#43a047" stroke-width="3" stroke-linecap="round"/></svg>';
+                html += '<svg class="paint-doodle-tl" style="width:54px" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="#e53935" stroke-width="3"/></svg>';
+                html += '<svg class="paint-doodle-tr" style="width:46px" viewBox="0 0 50 50"><rect x="5" y="5" width="40" height="40" fill="none" stroke="#1e88e5" stroke-width="3" rx="4"/></svg>';
+                html += '<svg class="paint-doodle-bl" style="width:42px" viewBox="0 0 45 45"><polygon points="22.5,2 28,17 44,17 31,27 36,43 22.5,33 9,43 14,27 1,17 17,17" fill="none" stroke="#fdd835" stroke-width="2.5"/></svg>';
+                html += '<svg class="paint-doodle-br" style="width:50px" viewBox="0 0 55 55"><path d="M27.5 5 C45 5, 50 25, 27.5 50 C5 25, 10 5, 27.5 5Z" fill="none" stroke="#e91e63" stroke-width="2.5"/></svg>';
+                html += '<svg class="paint-doodle-ml" style="width:36px" viewBox="0 0 40 40"><path d="M5 35 Q20 5 35 35" fill="none" stroke="#43a047" stroke-width="3" stroke-linecap="round"/></svg>';
                 html += '</div>';
-                html += '<div class="paint-ty-text" id="paintTyText">';
-                letters.forEach(function (l, i) {
-                    var d = (i * 0.06 + 0.3).toFixed(2);
-                    html += '<span class="paint-letter" style="animation-delay:' + d + 's">' + (l === ' ' ? '&nbsp;' : l) + '</span>';
-                });
+
+                /* SVG-stroke title — hidden solid text + SVG outline drawn on top */
+                html += '<div class="paint-ty-hw-wrap" id="paintHwWrap">';
+                html += '<div class="paint-ty-hw-hidden" id="paintHwHidden">Thank You!</div>';
+                html += '<svg class="paint-ty-hw-svg" id="paintHwSvg" viewBox="0 0 1 1" preserveAspectRatio="xMidYMid meet">';
+                html += '<text id="paintHwText" x="50%" y="80%" text-anchor="middle" dominant-baseline="auto"></text>';
+                html += '</svg>';
                 html += '</div>';
-                html += '<svg class="paint-ty-scribble" id="paintScribble" viewBox="0 0 200 20"><path d="M10 10 Q50 2 100 10 Q150 18 190 10" fill="none" stroke="#e53935" stroke-width="3" stroke-linecap="round" stroke-dasharray="200" stroke-dashoffset="200"><animate attributeName="stroke-dashoffset" to="0" dur="0.8s" begin="0.8s" fill="freeze"/></path></svg>';
+
+                /* Wavy underline scribble */
+                html += '<svg class="paint-ty-scribble" id="paintScribble" viewBox="0 0 240 20"><path d="M10 10 Q60 2 120 10 Q180 18 230 10" fill="none" stroke="#e53935" stroke-width="3" stroke-linecap="round" stroke-dasharray="240" stroke-dashoffset="240"><animate attributeName="stroke-dashoffset" to="0" dur="0.8s" begin="0.3s" fill="freeze"/></path></svg>';
+
                 html += '<div class="paint-ty-links" id="paintLinks">';
                 html += '<a href="https://drive.google.com/drive/folders/168FfG7xOKQQrY6Mei916_ZTk9QFS35Qo?usp=sharing" target="_blank" class="paint-ty-link"><i class="fas fa-folder-open"></i> Google Drive Portfolio</a>';
                 html += '<a href="https://www.tiktok.com/@cmm.bue" target="_blank" class="paint-ty-link"><i class="fab fa-tiktok"></i> @cmm.bue</a>';
@@ -1102,20 +1112,49 @@
                 html += '</div>';
                 paintCanvas.innerHTML = html;
 
-                /* Trigger animations */
+                /* --- SVG stroke animation for the title (Comic Sans) --- */
                 requestAnimationFrame(function () {
-                    var ty = document.getElementById('paintThankYou');
+                    var hwHidden = document.getElementById('paintHwHidden');
+                    var hwSvg    = document.getElementById('paintHwSvg');
+                    var hwText   = document.getElementById('paintHwText');
+                    if (hwHidden && hwSvg && hwText) {
+                        var rect = hwHidden.getBoundingClientRect();
+                        var fs   = parseFloat(getComputedStyle(hwHidden).fontSize) || 60;
+                        /* Size SVG viewport to match the hidden text block */
+                        hwSvg.setAttribute('viewBox', '0 0 ' + rect.width + ' ' + rect.height);
+                        hwText.setAttribute('x', (rect.width / 2).toFixed(1));
+                        hwText.setAttribute('y', (rect.height * 0.88).toFixed(1));
+                        hwText.setAttribute('font-size', fs.toFixed(1));
+                        hwText.textContent = 'Thank You!';
+                        /* Measure and set dash length */
+                        var len = hwText.getComputedTextLength() * 3.2;
+                        hwSvg.style.setProperty('--dash-len', len);
+                        hwText.style.strokeDasharray  = len;
+                        hwText.style.strokeDashoffset = len;
+                        /* Animate cursor into position then trigger draw */
+                        pcursor.classList.add('moving');
+                        pcursor.style.top  = '42%';
+                        pcursor.style.left = '36%';
+                        setTimeout(function () {
+                            hwSvg.classList.add('drawing');
+                            /* Fade out cursor once drawing is done */
+                            setTimeout(function () { pcursor.style.opacity = '0'; }, 2600);
+                        }, 300);
+                    }
+
+                    /* Show container + doodles */
+                    var ty      = document.getElementById('paintThankYou');
                     var doodles = document.getElementById('paintDoodles');
                     var scribble = document.getElementById('paintScribble');
-                    var links = document.getElementById('paintLinks');
-                    var name = document.getElementById('paintName');
+                    var links   = document.getElementById('paintLinks');
+                    var name    = document.getElementById('paintName');
                     if (ty) ty.classList.add('visible');
                     setTimeout(function () {
-                        if (doodles) doodles.classList.add('visible');
+                        if (doodles)  doodles.classList.add('visible');
                         if (scribble) scribble.classList.add('visible');
-                    }, 500);
-                    setTimeout(function () { if (links) links.classList.add('visible'); }, 1200);
-                    setTimeout(function () { if (name) name.classList.add('visible'); }, 1600);
+                    }, 400);
+                    setTimeout(function () { if (links) links.classList.add('visible'); }, 2800);
+                    setTimeout(function () { if (name)  name.classList.add('visible');  }, 3200);
                 });
 
                 /* Update internal slide state */
