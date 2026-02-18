@@ -1594,8 +1594,7 @@ body * { cursor: none !important; }
     margin: 0.5rem auto 1.5rem;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    aspect-ratio: 9 / 16;
-    max-height: 55vh;
+    aspect-ratio: 16 / 9;
     border: 1.5px solid rgba(0, 164, 255, 0.25);
     box-shadow: 0 0 30px rgba(0, 164, 255, 0.1);
     background: #000;
@@ -1622,7 +1621,7 @@ body * { cursor: none !important; }
     flex: 1;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     border: 1.5px solid rgba(0, 164, 255, 0.25);
     box-shadow: 0 0 30px rgba(0, 164, 255, 0.1);
     background: #000;
