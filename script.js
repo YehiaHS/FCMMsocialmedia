@@ -1135,13 +1135,52 @@
                 /* Build HTML: doodles in corners only, SVG-stroke hw-wrap title, links, name */
                 var html = '<div class="paint-thank-you" id="paintThankYou">';
 
-                /* Doodles — corner-only, each gets a BEM modifier class */
+                /* BUE Campus silhouette — hand-drawn Paint-style outline */
                 html += '<div class="paint-ty-doodles" id="paintDoodles">';
-                html += '<svg class="paint-doodle-tl" style="width:54px" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="#e53935" stroke-width="3"/></svg>';
-                html += '<svg class="paint-doodle-tr" style="width:46px" viewBox="0 0 50 50"><rect x="5" y="5" width="40" height="40" fill="none" stroke="#1e88e5" stroke-width="3" rx="4"/></svg>';
-                html += '<svg class="paint-doodle-bl" style="width:42px" viewBox="0 0 45 45"><polygon points="22.5,2 28,17 44,17 31,27 36,43 22.5,33 9,43 14,27 1,17 17,17" fill="none" stroke="#fdd835" stroke-width="2.5"/></svg>';
-                html += '<svg class="paint-doodle-br" style="width:50px" viewBox="0 0 55 55"><path d="M27.5 5 C45 5, 50 25, 27.5 50 C5 25, 10 5, 27.5 5Z" fill="none" stroke="#e91e63" stroke-width="2.5"/></svg>';
-                html += '<svg class="paint-doodle-ml" style="width:36px" viewBox="0 0 40 40"><path d="M5 35 Q20 5 35 35" fill="none" stroke="#43a047" stroke-width="3" stroke-linecap="round"/></svg>';
+                html += '<svg class="paint-bue-campus" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax meet">';
+                /* Main building silhouette — sketchy single path */
+                html += '<path class="bue-outline" d="';
+                /* Ground / steps */
+                html += 'M 30 390 L 30 370 L 100 370 ';
+                /* Left wing */
+                html += 'L 100 260 L 120 260 L 120 240 L 140 240 L 140 200 L 180 200 L 180 240 ';
+                /* Left tower */
+                html += 'L 220 240 L 220 170 L 240 170 L 240 140 L 260 140 L 260 110 ';
+                /* Left side of dome base */
+                html += 'L 280 110 L 290 100 ';
+                /* Dome arc */
+                html += 'Q 310 30, 400 20 Q 490 30, 510 100 ';
+                /* Dome finial */
+                html += 'M 396 20 L 396 6 L 404 6 L 404 20 ';
+                /* Right side of dome */
+                html += 'M 510 100 L 520 110 L 540 110 ';
+                /* Right tower */
+                html += 'L 540 140 L 560 140 L 560 170 L 580 170 L 580 240 ';
+                /* Right wing */
+                html += 'L 620 240 L 620 200 L 660 200 L 660 240 L 680 240 L 680 260 L 700 260 L 700 370 ';
+                /* Ground right */
+                html += 'L 770 370 L 770 390';
+                html += '" fill="none" stroke="#d32f2f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+                /* Three arches under dome */
+                html += '<path class="bue-outline" d="M 310 240 Q 340 190, 370 240 M 370 240 Q 400 190, 430 240 M 430 240 Q 460 190, 490 240" fill="none" stroke="#d32f2f" stroke-width="2" stroke-linecap="round"/>';
+                /* Three circular windows */
+                html += '<circle class="bue-outline" cx="325" cy="145" r="16" fill="none" stroke="#1565c0" stroke-width="2"/>';
+                html += '<circle class="bue-outline" cx="400" cy="130" r="18" fill="none" stroke="#1565c0" stroke-width="2"/>';
+                html += '<circle class="bue-outline" cx="475" cy="145" r="16" fill="none" stroke="#1565c0" stroke-width="2"/>';
+                /* Steps at entrance */
+                html += '<path class="bue-outline" d="M 330 370 L 330 350 L 350 350 L 350 330 L 450 330 L 450 350 L 470 350 L 470 370" fill="none" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+                /* Left palm tree */
+                html += '<path class="bue-outline" d="M 160 370 L 160 260 M 140 260 Q 160 230, 180 256 M 138 264 Q 155 240, 148 210 M 160 260 Q 175 226, 185 210" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round"/>';
+                /* Right palm tree */
+                html += '<path class="bue-outline" d="M 640 370 L 640 260 M 620 260 Q 640 230, 660 256 M 618 264 Q 635 240, 628 210 M 640 260 Q 655 226, 665 210" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round"/>';
+                /* Lamp posts */
+                html += '<path class="bue-outline" d="M 210 370 L 210 310 L 205 305 L 215 305 L 210 310" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round"/>';
+                html += '<path class="bue-outline" d="M 590 370 L 590 310 L 585 305 L 595 305 L 590 310" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round"/>';
+                /* Columns under arches */
+                html += '<path class="bue-outline" d="M 310 240 L 310 330 M 370 240 L 370 330 M 430 240 L 430 330 M 490 240 L 490 330" fill="none" stroke="#d32f2f" stroke-width="1.8" stroke-linecap="round"/>';
+                /* UK flag (tiny sketch on left pillar) */
+                html += '<path class="bue-outline" d="M 300 175 L 300 150 L 320 150 L 320 175 L 300 175 M 300 150 L 320 175 M 320 150 L 300 175 M 310 150 L 310 175 M 300 162 L 320 162" fill="none" stroke="#1565c0" stroke-width="1" stroke-linecap="round"/>';
+                html += '</svg>';
                 html += '</div>';
 
                 /* SVG-stroke title — hidden solid text + SVG outline drawn on top */
@@ -1186,7 +1225,20 @@
                     var name    = document.getElementById('paintName');
                     if (ty) ty.classList.add('visible');
                     setTimeout(function () {
-                        if (doodles)  doodles.classList.add('visible');
+                        if (doodles) {
+                            /* Measure each outline path/circle and set --bue-len for stroke draw */
+                            doodles.querySelectorAll('.bue-outline').forEach(function (el) {
+                                var len;
+                                if (el.tagName === 'circle') {
+                                    var r = parseFloat(el.getAttribute('r')) || 0;
+                                    len = 2 * Math.PI * r;
+                                } else {
+                                    len = el.getTotalLength ? el.getTotalLength() : 2000;
+                                }
+                                el.style.setProperty('--bue-len', len);
+                            });
+                            doodles.classList.add('visible');
+                        }
                         if (scribble) scribble.classList.add('visible');
                     }, 400);
                     setTimeout(function () { if (links) links.classList.add('visible'); }, 2800);

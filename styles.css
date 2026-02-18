@@ -2771,22 +2771,31 @@ body * { cursor: none !important; }
 }
 .paint-ty-name.visible { opacity: 1; }
 
-/* Doodles — fixed to canvas corners, never overlap center content */
+/* BUE campus silhouette doodle behind the content */
 .paint-ty-doodles {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 1rem;
 }
-.paint-ty-doodles svg {
-    position: absolute;
+.paint-bue-campus {
+    width: 92%;
+    max-width: 700px;
+    height: auto;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 1s ease;
 }
-.paint-ty-doodles.visible svg { opacity: 1; }
-/* Force doodles to corners */
-.paint-doodle-tl { top: 8px !important;  left: 8px !important;  }
-.paint-doodle-tr { top: 8px !important;  right: 8px !important; left: auto !important; }
-.paint-doodle-bl { bottom: 8px !important; left: 8px !important; top: auto !important; }
-.paint-doodle-br { bottom: 8px !important; right: 8px !important; left: auto !important; top: auto !important; }
-.paint-doodle-ml { top: 50% !important; left: 6px !important; transform: translateY(-50%); }
+.paint-ty-doodles.visible .paint-bue-campus { opacity: 0.22; }
+/* Stroke draw-in animation for each outline path */
+.bue-outline {
+    stroke-dasharray: var(--bue-len, 2000);
+    stroke-dashoffset: var(--bue-len, 2000);
+    transition: stroke-dashoffset 3s cubic-bezier(0.37,0,0.63,1) 0.4s;
+}
+.paint-ty-doodles.visible .bue-outline {
+    stroke-dashoffset: 0;
+}
