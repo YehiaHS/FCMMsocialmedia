@@ -685,8 +685,10 @@
     function setupEvents() {
         document.addEventListener('keydown', function (e) {
             switch (e.key) {
-                case 'ArrowRight': case 'ArrowDown': e.preventDefault(); next(); break;
-                case 'ArrowLeft': case 'ArrowUp': e.preventDefault(); prev(); break;
+                case 'ArrowRight': case 'ArrowDown': case 'PageDown':
+                    e.preventDefault(); next(); break;
+                case 'ArrowLeft': case 'ArrowUp': case 'PageUp':
+                    e.preventDefault(); prev(); break;
                 case ' ': e.preventDefault(); toggleAutoPlay(); break;
                 case 'Home': e.preventDefault(); goTo(0); break;
                 case 'End': e.preventDefault(); goTo(TOTAL - 1); break;
