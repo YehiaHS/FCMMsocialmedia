@@ -2713,42 +2713,21 @@ body * { cursor: none !important; }
     transform: scale(1);
 }
 
-/* SVG stroke title — Comic Sans, drawn outline on top of hidden solid text */
-.paint-ty-hw-wrap {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 0.6rem;
-}
-.paint-ty-hw-hidden {
+/* Thank You title */
+.paint-ty-title {
     font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-    font-size: clamp(3rem, 6vw, 5rem);
+    font-size: clamp(2.8rem, 5.5vw, 5rem);
     font-weight: 700;
-    white-space: nowrap;
-    color: #222;
-    visibility: hidden; /* holds space, SVG draws on top */
+    color: #111;
+    margin: 0 0 0.5rem;
+    line-height: 1.15;
+    opacity: 0;
+    transform: scale(0.85) rotate(-2deg);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
 }
-.paint-ty-hw-svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-}
-.paint-ty-hw-svg text {
-    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-    font-weight: 700;
-    fill: none;
-    stroke: #000;
-    stroke-width: 1.8;
-    stroke-dasharray: var(--dash-len, 2000);
-    stroke-dashoffset: var(--dash-len, 2000);
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: stroke-dashoffset 2.4s cubic-bezier(0.37, 0, 0.63, 1) 0.2s;
-}
-.paint-ty-hw-svg.drawing text {
-    stroke-dashoffset: 0;
+.paint-ty-title.visible {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
 }
 .paint-ty-scribble {
     width: 240px;

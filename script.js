@@ -1094,12 +1094,7 @@
                 html += '</div>';
 
                 /* SVG-stroke title — hidden solid text + SVG outline drawn on top */
-                html += '<div class="paint-ty-hw-wrap" id="paintHwWrap">';
-                html += '<div class="paint-ty-hw-hidden" id="paintHwHidden">Thank You!</div>';
-                html += '<svg class="paint-ty-hw-svg" id="paintHwSvg" viewBox="0 0 1 1" preserveAspectRatio="xMidYMid meet">';
-                html += '<text id="paintHwText" x="50%" y="80%" text-anchor="middle" dominant-baseline="auto"></text>';
-                html += '</svg>';
-                html += '</div>';
+                html += '<h1 class="paint-ty-title" id="paintTyTitle">Thank You!</h1>';
 
                 /* Wavy underline scribble */
                 html += '<svg class="paint-ty-scribble" id="paintScribble" viewBox="0 0 240 20"><path d="M10 10 Q60 2 120 10 Q180 18 230 10" fill="none" stroke="#e53935" stroke-width="3" stroke-linecap="round" stroke-dasharray="240" stroke-dashoffset="240"><animate attributeName="stroke-dashoffset" to="0" dur="0.8s" begin="0.3s" fill="freeze"/></path></svg>';
@@ -1114,35 +1109,23 @@
                 html += '</div>';
                 paintCanvas.innerHTML = html;
 
-                /* --- SVG stroke animation for the title (Comic Sans) --- */
+                /* --- Animate title in with a slight delay, then trigger cursor --- */
                 requestAnimationFrame(function () {
-                    var hwHidden = document.getElementById('paintHwHidden');
-                    var hwSvg    = document.getElementById('paintHwSvg');
-                    var hwText   = document.getElementById('paintHwText');
-                    if (hwHidden && hwSvg && hwText) {
-                        var rect = hwHidden.getBoundingClientRect();
-                        var fs   = parseFloat(getComputedStyle(hwHidden).fontSize) || 60;
-                        /* Size SVG viewport to match the hidden text block */
-                        hwSvg.setAttribute('viewBox', '0 0 ' + rect.width + ' ' + rect.height);
-                        hwText.setAttribute('x', (rect.width / 2).toFixed(1));
-                        hwText.setAttribute('y', (rect.height * 0.88).toFixed(1));
-                        hwText.setAttribute('font-size', fs.toFixed(1));
-                        hwText.textContent = 'Thank You!';
-                        /* Measure and set dash length */
-                        var len = hwText.getComputedTextLength() * 3.2;
-                        hwSvg.style.setProperty('--dash-len', len);
-                        hwText.style.strokeDasharray  = len;
-                        hwText.style.strokeDashoffset = len;
-                        /* Animate cursor into position then trigger draw */
+                    /* Small delay so browser has painted the canvas before we read layout */
+                    setTimeout(function () {
+                        var title = document.getElementById('paintTyTitle');
+                        if (title) title.classList.add('visible');
+
+                        /* Move cursor as if drawing */
                         pcursor.classList.add('moving');
                         pcursor.style.top  = '42%';
                         pcursor.style.left = '36%';
                         setTimeout(function () {
-                            hwSvg.classList.add('drawing');
-                            /* Fade out cursor once drawing is done */
-                            setTimeout(function () { pcursor.style.opacity = '0'; }, 2600);
-                        }, 300);
-                    }
+                            pcursor.style.top  = '42%';
+                            pcursor.style.left = '60%';
+                        }, 600);
+                        setTimeout(function () { pcursor.style.opacity = '0'; }, 2400);
+                    }, 80);
 
                     /* Show container + doodles */
                     var ty      = document.getElementById('paintThankYou');
