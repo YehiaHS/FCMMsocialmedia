@@ -1680,6 +1680,125 @@ body * { cursor: none !important; }
     transform: scale(1.3);
 }
 
+/* ===== INSTAGRAM POST CAROUSEL (Phone Mockup) ===== */
+.ig-carousel-phone {
+    position: relative;
+    max-width: 380px;
+    margin: 0 auto;
+    background: #000;
+    border-radius: 28px;
+    border: 2.5px solid #333;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
+}
+.ig-phone-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #000;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.ig-phone-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    flex-shrink: 0;
+}
+.ig-phone-user {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.01em;
+}
+.ig-phone-more {
+    margin-left: auto;
+    color: #aaa;
+    font-size: 14px;
+}
+.ig-phone-viewport {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    position: relative;
+    background: #111;
+}
+.ig-phone-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+}
+.ig-phone-slide {
+    min-width: 100%;
+    height: 100%;
+}
+.ig-phone-slide iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    object-fit: cover;
+}
+.ig-phone-actions {
+    display: flex;
+    gap: 14px;
+    padding: 10px 14px 4px;
+    font-size: 20px;
+    color: #fff;
+}
+.ig-phone-save {
+    margin-left: auto;
+}
+.ig-phone-dots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 0 12px;
+}
+.ig-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: background 0.25s, transform 0.25s;
+}
+.ig-dot.active {
+    background: #0095f6;
+    transform: scale(1.35);
+}
+.ig-phone-nav {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    /* Offset for header height */
+    margin-top: 24px;
+}
+.ig-nav-btn {
+    pointer-events: auto;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    border: none;
+    color: #fff;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s, background 0.2s;
+}
+.ig-nav-btn:hover {
+    opacity: 1;
+    background: rgba(0,0,0,0.75);
+}
+
 /* ===== TECH TAGS ===== */
 .tech-tags {
     display: flex;

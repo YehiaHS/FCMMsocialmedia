@@ -4,15 +4,15 @@
     /* ==================================================================
        CONFIGURATION
        ================================================================== */
-    var TOTAL = 10;
+    var TOTAL = 11;
     var TRANSITION_MS = 750;
     var CLIP_COLORS = [
         '#7b61ff', '#3a86ff', '#00b4d8', '#2ecc71', '#e91e63',
-        '#ff9f1c', '#8338ec', '#3a86ff', '#00b4d8', '#00a4ff'
+        '#e040fb', '#ff9f1c', '#8338ec', '#3a86ff', '#00b4d8', '#00a4ff'
     ];
     var CLIP_LABELS = [
         'Title', 'Role', 'Portfolio', 'Open Day', 'TikTok',
-        'Pipeline', 'Reflect', 'Skills', 'Forward', 'End'
+        'Posts', 'Pipeline', 'Reflect', 'Skills', 'Forward', 'End'
     ];
 
     var current = 0;
@@ -344,13 +344,13 @@
 
     function performDragTransition(index, direction) {
         /* Intercept navigation to slide 9 — run Paint transition instead */
-        if (index === 9 && current === 8) {
+        if (index === 10 && current === 9) {
             runPaintTransition();
             return;
         }
 
         /* Going back from Paint overlay → restore Premiere shell */
-        if (current === 9) {
+        if (current === 10) {
             var overlay = document.getElementById('paintOverlay');
             var shell = document.querySelector('.premiere-shell');
             var fakeCur = document.getElementById('fakeCursor');
@@ -416,7 +416,7 @@
                 current = index;
                 updateTimeline();
                 updateTimecode();
-                if (index === 7) setTimeout(dealTarotCards, 650);
+                if (index === 8) setTimeout(dealTarotCards, 650);
 
                 /* Clean after animation */
                 setTimeout(function () {
@@ -483,7 +483,7 @@
     }
 
     function next() {
-        if (current === 7) {
+        if (current === 8) {
             var cards = document.querySelectorAll('.tc');
             var total = cards.length;        /* typically 3 */
             if (tarotStep < total - 1) {
@@ -498,7 +498,7 @@
         goTo(current + 1);
     }
     function prev() {
-        if (current === 7) {
+        if (current === 8) {
             if (tarotStep >= 0) {
                 openTarotCard(-1);
                 tarotStep = -1;
@@ -516,7 +516,7 @@
             btn.classList.add('playing');
             icon.className = 'fas fa-pause';
             autoTimer = setInterval(function () {
-                if (current === 7) {
+                if (current === 8) {
                     var cards = document.querySelectorAll('.tc');
                     if (tarotStep < cards.length - 1) {
                         tarotStep++;
@@ -574,7 +574,7 @@
 
         /* V2 */
         var v2 = makeTrack('V2');
-        [0, 3, 6, 9].forEach(function (i) {
+        [0, 3, 7, 10].forEach(function (i) {
             var clip = document.createElement('div');
             clip.className = 'clip';
             clip.style.background = 'rgba(234,119,255,0.35)';
@@ -891,6 +891,7 @@
         updateTimeline();
         updateTimecode();
         initReelCarousel();
+        initIgCarousel();
         initTarotDeck();
         initSocialParallax();
         initHandwriteSvg();
@@ -1286,7 +1287,7 @@
                 /* Update internal slide state */
                 slides[current].classList.remove('active');
                 slides[current].style.opacity = '';
-                current = 9;
+                current = 10;
                 updateTimeline();
                 updateTimecode();
                 transitioning = false;
@@ -1577,6 +1578,41 @@
         nextBtn && nextBtn.addEventListener('click', function () { goTo(idx + 1); });
         dots.forEach(function (d) {
             d.addEventListener('click', function () { goTo(parseInt(d.getAttribute('data-reel'))); });
+        });
+    }
+
+    /* ==================================================================
+       INSTAGRAM POST CAROUSEL (Slide 5)
+       ================================================================== */
+    function initIgCarousel() {
+        var track   = document.getElementById('igPostTrack');
+        var prevBtn = document.getElementById('igPrev');
+        var nextBtn = document.getElementById('igNext');
+        var dots    = document.querySelectorAll('.ig-dot');
+        if (!track) return;
+        var total = track.children.length;
+        var idx = 0;
+
+        function goTo(n) {
+            idx = (n + total) % total;
+            track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+            dots.forEach(function (d, i) {
+                d.classList.toggle('active', i === idx);
+            });
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', function (e) { e.stopPropagation(); goTo(idx - 1); });
+        if (nextBtn) nextBtn.addEventListener('click', function (e) { e.stopPropagation(); goTo(idx + 1); });
+        dots.forEach(function (d) {
+            d.addEventListener('click', function (e) { e.stopPropagation(); goTo(parseInt(d.getAttribute('data-ig'))); });
+        });
+
+        /* Swipe support */
+        var startX = 0;
+        track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+        track.addEventListener('touchend', function (e) {
+            var dx = e.changedTouches[0].clientX - startX;
+            if (Math.abs(dx) > 40) goTo(idx + (dx < 0 ? 1 : -1));
         });
     }
 
