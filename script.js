@@ -787,7 +787,197 @@
         initTarotDeck();
         initSocialParallax();
         initHandwriteSvg();
+
+        /* ---- Run the Win11 preloader sequence ---- */
+        runPreloader();
     });
+
+    /* ==================================================================
+       WINDOWS 11 PRELOADER SEQUENCE
+       ================================================================== */
+    function runPreloader() {
+        var preloader     = document.getElementById('preloader');
+        var pcursor       = document.getElementById('preloaderCursor');
+        var prIcon        = document.getElementById('prIcon');
+        var prSplash      = document.getElementById('prSplash');
+        var splashStatus  = document.getElementById('prSplashStatus');
+        var splashBar     = document.getElementById('prSplashBarFill');
+        var splashFile    = document.getElementById('prSplashFile');
+        var taskbarPr     = document.getElementById('taskbarPr');
+        var taskbarTime   = document.getElementById('taskbarTime');
+        var taskbarDate   = document.getElementById('taskbarDate');
+        var shell         = document.querySelector('.premiere-shell');
+        var fakeCursor    = document.getElementById('fakeCursor');
+
+        if (!preloader) { if (shell) shell.classList.add('ready'); return; }
+
+        /* Set taskbar clock */
+        var now = new Date();
+        if (taskbarTime) taskbarTime.textContent = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+        if (taskbarDate) taskbarDate.textContent = now.getDate().toString().padStart(2,'0') + '/' + (now.getMonth()+1).toString().padStart(2,'0') + '/' + now.getFullYear();
+
+        /* Hide main presentation initially */
+        if (shell) shell.style.opacity = '0';
+        if (fakeCursor) fakeCursor.style.display = 'none';
+
+        /* ------ Asset Preloading ------ */
+        var allImages = Array.prototype.slice.call(document.querySelectorAll('img[loading="lazy"]'));
+        var totalAssets = allImages.length || 1;
+        var loadedAssets = 0;
+        var assetsReady = false;
+
+        var statusMessages = [
+            'Loading media cache…',
+            'Indexing footage…',
+            'Reading project file…',
+            'Loading effects plugins…',
+            'Conforming audio…',
+            'Building peak files…',
+            'Linking media…',
+            'Preparing timeline…',
+            'Optimizing playback engine…',
+            'Initializing Mercury Playback…'
+        ];
+
+        function updateProgress(pct) {
+            if (splashBar) splashBar.style.width = Math.min(pct, 100) + '%';
+            var msgIdx = Math.min(Math.floor(pct / 10), statusMessages.length - 1);
+            if (splashStatus) splashStatus.textContent = statusMessages[msgIdx];
+        }
+
+        /* Start preloading all lazy images */
+        function preloadAssets() {
+            allImages.forEach(function (img) {
+                /* Force load by removing lazy and setting a new Image */
+                img.removeAttribute('loading');
+                var preImg = new Image();
+                preImg.onload = preImg.onerror = function () {
+                    loadedAssets++;
+                    updateProgress((loadedAssets / totalAssets) * 100);
+                    if (loadedAssets >= totalAssets) {
+                        assetsReady = true;
+                    }
+                };
+                preImg.src = img.src;
+            });
+            /* Fallback: if no images or all cached */
+            if (allImages.length === 0) { assetsReady = true; }
+        }
+
+        /* ------ Cursor Animation Sequence ------ */
+        function moveCursorTo(el, offsetX, offsetY, cb) {
+            var rect = el.getBoundingClientRect();
+            var targetX = rect.left + (offsetX || rect.width / 2);
+            var targetY = rect.top + (offsetY || rect.height / 2);
+            pcursor.classList.add('moving');
+            pcursor.style.left = targetX + 'px';
+            pcursor.style.top = targetY + 'px';
+            setTimeout(cb, 650);
+        }
+
+        function clickAnim(cb) {
+            pcursor.classList.add('clicking');
+            setTimeout(function () {
+                pcursor.classList.remove('clicking');
+                if (cb) cb();
+            }, 250);
+        }
+
+        /* Sequence steps */
+        var sequence = [
+            /* 0 — Small pause on the desktop (1s) */
+            function (next) { setTimeout(next, 1000); },
+
+            /* 1 — Move cursor to Premiere icon */
+            function (next) { moveCursorTo(prIcon, null, null, next); },
+
+            /* 2 — Highlight icon */
+            function (next) { prIcon.classList.add('highlight'); setTimeout(next, 200); },
+
+            /* 3 — Double-click */
+            function (next) {
+                clickAnim(function () {
+                    setTimeout(function () {
+                        clickAnim(next);
+                    }, 150);
+                });
+            },
+
+            /* 4 — Start preloading & show splash */
+            function (next) {
+                preloadAssets();
+                prIcon.classList.remove('highlight');
+                prSplash.classList.add('visible');
+                if (taskbarPr) { taskbarPr.style.opacity = '1'; taskbarPr.classList.add('active'); }
+                /* Move cursor away from splash */
+                pcursor.classList.add('moving');
+                pcursor.style.left = '70%';
+                pcursor.style.top = '75%';
+                setTimeout(next, 500);
+            },
+
+            /* 5 — Wait for assets to load (with a minimum 2.5s for effect) */
+            function (next) {
+                var minTime = 2500;
+                var start = Date.now();
+                function check() {
+                    var elapsed = Date.now() - start;
+                    /* Simulate progress if assets are quick */
+                    if (!assetsReady) {
+                        var simPct = Math.min((elapsed / 6000) * 80, 80);
+                        updateProgress(Math.max(simPct, (loadedAssets / totalAssets) * 100));
+                    }
+                    if (assetsReady && elapsed >= minTime) {
+                        updateProgress(100);
+                        if (splashStatus) splashStatus.textContent = 'Ready';
+                        setTimeout(next, 600);
+                    } else {
+                        requestAnimationFrame(check);
+                    }
+                }
+                check();
+            },
+
+            /* 6 — Fullscreen the splash → transition to presentation */
+            function (next) {
+                /* Hide cursor for the transition */
+                pcursor.style.opacity = '0';
+
+                prSplash.classList.add('fullscreening');
+
+                setTimeout(function () {
+                    /* Show the actual presentation behind */
+                    if (shell) { shell.style.opacity = '1'; shell.classList.add('ready'); }
+                    /* Start hiding the preloader */
+                    preloader.classList.add('done');
+                    setTimeout(function () {
+                        /* Show main cursor, remove preloader from DOM */
+                        if (fakeCursor) fakeCursor.style.display = '';
+                        preloader.style.display = 'none';
+                        /* Activate first slide animations again */
+                        var s0 = document.querySelector('.slide[data-index="0"]');
+                        if (s0) {
+                            s0.classList.remove('active');
+                            void s0.offsetWidth;
+                            s0.classList.add('active');
+                        }
+                    }, 700);
+                }, 800);
+            }
+        ];
+
+        /* Run the sequence */
+        var step = 0;
+        function runStep() {
+            if (step < sequence.length) {
+                sequence[step](function () {
+                    step++;
+                    runStep();
+                });
+            }
+        }
+        runStep();
+    }
 
     /* ==================================================================
        REEL CAROUSEL
