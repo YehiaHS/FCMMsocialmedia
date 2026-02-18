@@ -1163,7 +1163,7 @@ body * { cursor: none !important; }
     display: flex;
     flex-direction: column;
     gap: 12px;
-    animation: wfScrollDown 22s linear infinite;
+    animation: wfScrollDown 36.7s linear infinite;
 }
 .wf-scroll-rev {
     animation-name: wfScrollUp;
