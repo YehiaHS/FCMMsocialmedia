@@ -429,19 +429,57 @@
         });
     }
 
-    /* Open (or close) a tarot card by index programmatically */
+    /* Open (or close) a tarot card by index programmatically — bypasses click toggle */
     function openTarotCard(idx) {
-        var cards = document.querySelectorAll('.tc');
+        var cards  = document.querySelectorAll('.tc');
+        var detail = document.getElementById('tarotDetail');
         if (!cards.length) return;
+
         if (idx === -1) {
-            /* close all */
+            /* Close all */
             cards.forEach(function (c) { c.classList.remove('selected', 'dimmed'); });
-            var det = document.getElementById('tarotDetail');
-            if (det) det.classList.remove('open');
+            if (detail) detail.classList.remove('open');
             return;
         }
+
         var card = cards[idx];
-        if (card) card.click();
+        if (!card) return;
+
+        /* Make sure the card is dealt + flipped so it's visible */
+        card.classList.add('dealt', 'flipped');
+
+        /* Deselect everything, dim others, select this one */
+        cards.forEach(function (c) {
+            c.classList.remove('selected', 'dimmed');
+            if (c !== card) c.classList.add('dimmed');
+        });
+        card.classList.add('selected');
+
+        /* Populate detail panel (same logic as initTarotDeck click handler) */
+        var dataIdx = parseInt(card.getAttribute('data-tarot'));
+        var data    = TAROT_DATA[dataIdx];
+        var accent  = card.getAttribute('data-accent') || '#c9a84c';
+        if (data && detail) {
+            detail.style.setProperty('--td-accent', accent);
+            var tdNum  = document.getElementById('tdNumeral');
+            var tdName = document.getElementById('tdName');
+            var tdSub  = document.getElementById('tdSub');
+            var tdLore = document.getElementById('tdLore');
+            var tdList = document.getElementById('tdList');
+            if (tdNum)  tdNum.textContent  = data.num;
+            if (tdName) tdName.textContent = data.name;
+            if (tdSub)  tdSub.textContent  = data.sub;
+            if (tdLore) tdLore.textContent = data.lore;
+            if (tdList) {
+                tdList.innerHTML = '';
+                data.skills.forEach(function (s) {
+                    var li = document.createElement('li');
+                    li.textContent = s;
+                    tdList.appendChild(li);
+                });
+            }
+            detail.classList.add('open');
+        }
     }
 
     function next() {
