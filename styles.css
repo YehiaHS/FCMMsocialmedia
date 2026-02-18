@@ -1123,28 +1123,40 @@ body * { cursor: none !important; }
     overflow: hidden;
     display: flex;
     justify-content: center;
-    gap: 20px;
-    perspective: 600px;
+    gap: 10px;
+    perspective: 800px;
     opacity: 0;
     transition: opacity 1.5s ease;
 }
 .slide.active .wf-bg { opacity: 1; }
 
 .wf-track {
-    width: 160px;
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     transform-style: preserve-3d;
-    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 20%, rgba(0,0,0,0.6) 80%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 20%, rgba(0,0,0,0.6) 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 .wf-track-l {
-    transform: rotateY(25deg) translateX(-60px);
-    opacity: 0.35;
+    transform: rotateY(12deg);
+    opacity: 0.7;
 }
 .wf-track-r {
-    transform: rotateY(-25deg) translateX(60px);
-    opacity: 0.35;
+    transform: rotateY(-12deg);
+    opacity: 0.7;
+}
+.wf-track-c {
+    transform: rotateY(0deg);
+    opacity: 0.75;
+}
+.wf-track-cl {
+    transform: rotateY(6deg);
+    opacity: 0.72;
+}
+.wf-track-cr {
+    transform: rotateY(-6deg);
+    opacity: 0.72;
 }
 
 .wf-scroll {
@@ -1166,11 +1178,11 @@ body * { cursor: none !important; }
 }
 
 .wf-thumb {
-    width: 160px;
-    height: 100px;
+    width: 100%;
+    aspect-ratio: 16/10;
     border-radius: 6px;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
     flex-shrink: 0;
 }
 .wf-thumb img {
@@ -1178,7 +1190,7 @@ body * { cursor: none !important; }
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: brightness(0.5) saturate(0.7);
+    filter: none;
 }
 
 /* Make portfolio cards readable over waterfall */
