@@ -618,14 +618,20 @@ body * { cursor: none !important; }
     opacity: 0;
     transform: translateX(-45%) scale(0.88) rotateY(6deg);
     filter: blur(4px) brightness(0.6);
-    transition: all 0.65s var(--ease-out-expo);
+    transition: opacity 0.55s var(--ease-out-expo),
+                transform 0.55s var(--ease-out-expo),
+                filter 0.55s var(--ease-out-expo);
+    will-change: transform, opacity, filter;
     z-index: 2;
 }
 .slide.drag-out-right {
     opacity: 0;
     transform: translateX(45%) scale(0.88) rotateY(-6deg);
     filter: blur(4px) brightness(0.6);
-    transition: all 0.65s var(--ease-out-expo);
+    transition: opacity 0.55s var(--ease-out-expo),
+                transform 0.55s var(--ease-out-expo),
+                filter 0.55s var(--ease-out-expo);
+    will-change: transform, opacity, filter;
     z-index: 2;
 }
 
@@ -634,13 +640,15 @@ body * { cursor: none !important; }
     opacity: 1;
     pointer-events: auto;
     z-index: 1;
-    animation: dragInFromLeft 0.7s var(--ease-out-expo) forwards;
+    will-change: transform, opacity, filter;
+    animation: dragInFromLeft 0.65s var(--ease-out-expo) forwards;
 }
 .slide.drag-in-right {
     opacity: 1;
     pointer-events: auto;
     z-index: 1;
-    animation: dragInFromRight 0.7s var(--ease-out-expo) forwards;
+    will-change: transform, opacity, filter;
+    animation: dragInFromRight 0.65s var(--ease-out-expo) forwards;
 }
 
 @keyframes dragInFromLeft {

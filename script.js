@@ -369,41 +369,43 @@
         prevSlide.classList.remove('active');
         prevSlide.classList.add(direction === 'right' ? 'drag-out-left' : 'drag-out-right');
 
-        /* Bring in the new slide */
-        setTimeout(function () {
-            /* Clean outgoing classes — clear ALL inline styles so CSS classes take over again */
-            prevSlide.classList.remove('drag-out-left', 'drag-out-right');
-            prevSlide.style.opacity = '';
-            prevSlide.style.transform = '';
-            prevSlide.style.filter = '';
-            /* Reset outgoing anim-el delays so they don't bleed into future visits */
-            $$('.anim-el', prevSlide).forEach(function (el) {
-                el.style.transitionDelay = '0ms';
+        /* Bring in the new slide on the very next frame — eliminates the blank-gap stutter */
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                /* Clean outgoing classes — clear ALL inline styles so CSS classes take over again */
+                prevSlide.classList.remove('drag-out-left', 'drag-out-right');
+                prevSlide.style.opacity = '';
+                prevSlide.style.transform = '';
+                prevSlide.style.filter = '';
+                /* Reset outgoing anim-el delays so they don't bleed into future visits */
+                $$('.anim-el', prevSlide).forEach(function (el) {
+                    el.style.transitionDelay = '0ms';
+                });
+
+                /* Clear any stale inline styles on the incoming slide */
+                nextSlide.style.opacity = '';
+                nextSlide.style.transform = '';
+                nextSlide.style.filter = '';
+
+                /* Set entry delays on anim elements */
+                $$('.anim-el', nextSlide).forEach(function (el, i) {
+                    el.style.transitionDelay = (i * 90 + 100) + 'ms';
+                });
+
+                nextSlide.classList.add('active', direction === 'right' ? 'drag-in-right' : 'drag-in-left');
+
+                current = index;
+                updateTimeline();
+                updateTimecode();
+                if (index === 7) setTimeout(dealTarotCards, 650);
+
+                /* Clean after animation */
+                setTimeout(function () {
+                    nextSlide.classList.remove('drag-in-left', 'drag-in-right');
+                    transitioning = false;
+                }, TRANSITION_MS);
             });
-
-            /* Clear any stale inline styles on the incoming slide */
-            nextSlide.style.opacity = '';
-            nextSlide.style.transform = '';
-            nextSlide.style.filter = '';
-
-            /* Set entry delays on anim elements */
-            $$('.anim-el', nextSlide).forEach(function (el, i) {
-                el.style.transitionDelay = (i * 90 + 100) + 'ms';
-            });
-
-            nextSlide.classList.add('active', direction === 'right' ? 'drag-in-right' : 'drag-in-left');
-
-            current = index;
-            updateTimeline();
-            updateTimecode();
-            if (index === 7) setTimeout(dealTarotCards, 650);
-
-            /* Clean after animation */
-            setTimeout(function () {
-                nextSlide.classList.remove('drag-in-left', 'drag-in-right');
-                transitioning = false;
-            }, TRANSITION_MS);
-        }, 120);
+        });
     }
 
     function next() { goTo(current + 1); }
