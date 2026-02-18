@@ -992,8 +992,8 @@
 
         /* Sequence steps */
         var sequence = [
-            /* 0 — Small pause on the desktop (1s) */
-            function (next) { setTimeout(next, 1000); },
+            /* 0 — Small pause on the desktop (400ms) */
+            function (next) { setTimeout(next, 400); },
 
             /* 1 — Move cursor to Premiere icon */
             function (next) { moveCursorTo(prIcon, null, null, next); },
@@ -1023,21 +1023,21 @@
                 setTimeout(next, 500);
             },
 
-            /* 5 — Wait for assets to load (with a minimum 2.5s for effect) */
+            /* 5 — Wait for assets to load (with a minimum 1.2s for effect) */
             function (next) {
-                var minTime = 2500;
+                var minTime = 1200;
                 var start = Date.now();
                 function check() {
                     var elapsed = Date.now() - start;
                     /* Simulate progress if assets are quick */
                     if (!assetsReady) {
-                        var simPct = Math.min((elapsed / 6000) * 80, 80);
+                        var simPct = Math.min((elapsed / 2500) * 80, 80);
                         updateProgress(Math.max(simPct, (loadedAssets / totalAssets) * 100));
                     }
                     if (assetsReady && elapsed >= minTime) {
                         updateProgress(100);
                         if (splashStatus) splashStatus.textContent = 'Ready';
-                        setTimeout(next, 600);
+                        setTimeout(next, 300);
                     } else {
                         requestAnimationFrame(check);
                     }
@@ -1068,8 +1068,8 @@
                             void s0.offsetWidth;
                             s0.classList.add('active');
                         }
-                    }, 700);
-                }, 800);
+                    }, 400);
+                }, 500);
             }
         ];
 
