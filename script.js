@@ -1021,7 +1021,8 @@
         /* Hide main cursor */
         if (fakeCursor) fakeCursor.style.display = 'none';
 
-        /* Position overlay cursor center */
+        /* Position overlay cursor center and make sure it is visible */
+        pcursor.style.opacity = '1';
         pcursor.style.left = '50%';
         pcursor.style.top = '50%';
         pcursor.classList.remove('moving', 'clicking');
@@ -1106,6 +1107,7 @@
                 html += '<div class="paint-ty-links" id="paintLinks">';
                 html += '<a href="https://drive.google.com/drive/folders/168FfG7xOKQQrY6Mei916_ZTk9QFS35Qo?usp=sharing" target="_blank" class="paint-ty-link"><i class="fas fa-folder-open"></i> Google Drive Portfolio</a>';
                 html += '<a href="https://www.tiktok.com/@cmm.bue" target="_blank" class="paint-ty-link"><i class="fab fa-tiktok"></i> @cmm.bue</a>';
+                html += '<a href="https://www.instagram.com/cmm.bue/" target="_blank" class="paint-ty-link"><i class="fab fa-instagram"></i> cmm.bue</a>';
                 html += '<a href="https://bue.edu.eg" target="_blank" class="paint-ty-link"><i class="fas fa-globe"></i> bue.edu.eg</a>';
                 html += '</div>';
                 html += '<p class="paint-ty-name" id="paintName">Yehia Salem · 229916</p>';
