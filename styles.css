@@ -1130,6 +1130,15 @@ body * { cursor: none !important; }
 }
 .slide.active .wf-bg { opacity: 1; }
 
+.wf-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(0, 80, 255, 0.10) 0%, rgba(200, 0, 50, 0.10) 100%);
+}
+
 .wf-track {
     flex: 1;
     min-width: 0;
