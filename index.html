@@ -8,6 +8,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <!-- Preload media -->
+    <link rel="preload" href="media/open_day.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="media/reel1.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="media/reel2.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="media/reel3.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="media/reel4.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="media/post1.jpg" as="image">
+    <link rel="preload" href="media/post2.jpg" as="image">
+    <link rel="preload" href="media/post3.jpg" as="image">
 </head>
 <body>
     <!-- ===== WINDOWS 11 PRELOADER DESKTOP ===== -->
@@ -945,12 +954,7 @@
                                 <div class="anim-el"><h2 class="slide-heading">Open Day Video</h2></div>
                                 <div class="anim-el">
                                     <div class="video-embed-zone">
-                                        <iframe
-                                            src="https://drive.google.com/file/d/1aDTgSMVa4sIHafWpOXiH9twYbNGQvIjV/preview"
-                                            allow="autoplay"
-                                            allowfullscreen
-                                            loading="lazy">
-                                        </iframe>
+                                        <video src="media/open_day.mp4" controls playsinline preload="auto" muted></video>
                                     </div>
                                 </div>
                                 <div class="anim-el">
@@ -975,36 +979,16 @@
                                         <div class="reel-carousel-window">
                                             <div class="reel-carousel-track" id="reelTrack">
                                                 <div class="reel-carousel-item">
-                                                    <iframe
-                                                        src="https://drive.google.com/file/d/1bktJfcnmwa3DzTa1H_mms-kLUO-tcgvc/preview"
-                                                        allow="autoplay"
-                                                        allowfullscreen
-                                                        loading="lazy">
-                                                    </iframe>
+                                                    <video src="media/reel1.mp4" controls playsinline preload="auto" muted></video>
                                                 </div>
                                                 <div class="reel-carousel-item">
-                                                    <iframe
-                                                        src="https://drive.google.com/file/d/1CCvfNANWs_7nf4Vz_J9i3NOuBm8YuKgx/preview"
-                                                        allow="autoplay"
-                                                        allowfullscreen
-                                                        loading="lazy">
-                                                    </iframe>
+                                                    <video src="media/reel2.mp4" controls playsinline preload="auto" muted></video>
                                                 </div>
                                                 <div class="reel-carousel-item">
-                                                    <iframe
-                                                        src="https://drive.google.com/file/d/1PR3YlaiSj1QXf5MoVFrOR_9fvlJBROfe/preview"
-                                                        allow="autoplay"
-                                                        allowfullscreen
-                                                        loading="lazy">
-                                                    </iframe>
+                                                    <video src="media/reel3.mp4" controls playsinline preload="auto" muted></video>
                                                 </div>
                                                 <div class="reel-carousel-item">
-                                                    <iframe
-                                                        src="https://drive.google.com/file/d/1gBFGKlo2xfIrfgW37E6KHKJl4mL2zJ5K/preview"
-                                                        allow="autoplay"
-                                                        allowfullscreen
-                                                        loading="lazy">
-                                                    </iframe>
+                                                    <video src="media/reel4.mp4" controls playsinline preload="auto" muted></video>
                                                 </div>
                                             </div>
                                         </div>
@@ -1042,13 +1026,13 @@
                                         <div class="ig-phone-viewport">
                                             <div class="ig-phone-track" id="igPostTrack">
                                                 <div class="ig-phone-slide">
-                                                    <iframe src="https://drive.google.com/file/d/14XRobnoJ_oNYxN2hIySCwd83zxwHB6ys/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                                                    <img src="media/post1.jpg" alt="Seasonal post 1" loading="eager">
                                                 </div>
                                                 <div class="ig-phone-slide">
-                                                    <iframe src="https://drive.google.com/file/d/1qXptkNgy0IH4bo9CB35Rc1-Yxhafl6Lg/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                                                    <img src="media/post2.jpg" alt="Seasonal post 2" loading="eager">
                                                 </div>
                                                 <div class="ig-phone-slide">
-                                                    <iframe src="https://drive.google.com/file/d/1C7aq_Kuf05keENfVslsliE_VLX3_Frkk/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                                                    <img src="media/post3.jpg" alt="Seasonal post 3" loading="eager">
                                                 </div>
                                             </div>
                                         </div>
@@ -1081,6 +1065,95 @@
 
                         <!-- SLIDE 6 — PIPELINE -->
                         <div class="slide" data-index="6">
+                            <!-- Animated Excel Content Calendar Background -->
+                            <div class="excel-calendar" aria-hidden="true">
+                                <div class="excel-toolbar">
+                                    <span class="excel-logo"><i class="fas fa-table"></i></span>
+                                    <span class="excel-title">Content_Calendar.xlsx</span>
+                                    <span class="excel-dots">
+                                        <span></span><span></span><span></span>
+                                    </span>
+                                </div>
+                                <div class="excel-ribbon">
+                                    <span class="excel-tab active">Home</span>
+                                    <span class="excel-tab">Insert</span>
+                                    <span class="excel-tab">Format</span>
+                                </div>
+                                <div class="excel-grid">
+                                    <div class="excel-header-row">
+                                        <div class="excel-cell excel-row-num"></div>
+                                        <div class="excel-cell excel-col-head">A</div>
+                                        <div class="excel-cell excel-col-head">B</div>
+                                        <div class="excel-cell excel-col-head">C</div>
+                                        <div class="excel-cell excel-col-head">D</div>
+                                        <div class="excel-cell excel-col-head">E</div>
+                                    </div>
+                                    <div class="excel-header-row excel-label-row">
+                                        <div class="excel-cell excel-row-num">1</div>
+                                        <div class="excel-cell excel-label">Week</div>
+                                        <div class="excel-cell excel-label">Platform</div>
+                                        <div class="excel-cell excel-label">Content Type</div>
+                                        <div class="excel-cell excel-label">Status</div>
+                                        <div class="excel-cell excel-label">Notes</div>
+                                    </div>
+                                    <div class="excel-data-row" style="--row-delay: 0">
+                                        <div class="excel-cell excel-row-num">2</div>
+                                        <div class="excel-cell">Wk 1</div>
+                                        <div class="excel-cell excel-platform"><i class="fab fa-tiktok"></i> TikTok</div>
+                                        <div class="excel-cell">Trend Reel</div>
+                                        <div class="excel-cell excel-status done">✓ Done</div>
+                                        <div class="excel-cell excel-note">Beat-sync edit</div>
+                                    </div>
+                                    <div class="excel-data-row" style="--row-delay: 1">
+                                        <div class="excel-cell excel-row-num">3</div>
+                                        <div class="excel-cell">Wk 1</div>
+                                        <div class="excel-cell excel-platform"><i class="fab fa-instagram"></i> IG</div>
+                                        <div class="excel-cell">Carousel</div>
+                                        <div class="excel-cell excel-status done">✓ Done</div>
+                                        <div class="excel-cell excel-note">3 slides</div>
+                                    </div>
+                                    <div class="excel-data-row" style="--row-delay: 2">
+                                        <div class="excel-cell excel-row-num">4</div>
+                                        <div class="excel-cell">Wk 2</div>
+                                        <div class="excel-cell excel-platform"><i class="fab fa-tiktok"></i> TikTok</div>
+                                        <div class="excel-cell">Discussion</div>
+                                        <div class="excel-cell excel-status done">✓ Done</div>
+                                        <div class="excel-cell excel-note">Voiceover</div>
+                                    </div>
+                                    <div class="excel-data-row" style="--row-delay: 3">
+                                        <div class="excel-cell excel-row-num">5</div>
+                                        <div class="excel-cell">Wk 3</div>
+                                        <div class="excel-cell excel-platform"><i class="fab fa-instagram"></i> IG</div>
+                                        <div class="excel-cell">Static Post</div>
+                                        <div class="excel-cell excel-status progress">◐ WIP</div>
+                                        <div class="excel-cell excel-note">Seasonal theme</div>
+                                    </div>
+                                    <div class="excel-data-row" style="--row-delay: 4">
+                                        <div class="excel-cell excel-row-num">6</div>
+                                        <div class="excel-cell">Wk 3</div>
+                                        <div class="excel-cell excel-platform"><i class="fas fa-video"></i> YouTube</div>
+                                        <div class="excel-cell">Open Day</div>
+                                        <div class="excel-cell excel-status progress">◐ WIP</div>
+                                        <div class="excel-cell excel-note">6 hrs footage</div>
+                                    </div>
+                                    <div class="excel-data-row" style="--row-delay: 5">
+                                        <div class="excel-cell excel-row-num">7</div>
+                                        <div class="excel-cell">Wk 4</div>
+                                        <div class="excel-cell excel-platform"><i class="fab fa-tiktok"></i> TikTok</div>
+                                        <div class="excel-cell">Campus Tour</div>
+                                        <div class="excel-cell excel-status planned">○ Plan</div>
+                                        <div class="excel-cell excel-note">Trending audio</div>
+                                    </div>
+                                    <div class="excel-data-row" style="--row-delay: 6">
+                                        <div class="excel-cell excel-row-num">8</div>
+                                        <div class="excel-cell">Wk 4</div>
+                                        <div class="excel-cell excel-platform"><i class="fab fa-instagram"></i> IG</div>
+                                        <div class="excel-cell">Reel</div>
+                                        <div class="excel-cell excel-status planned">○ Plan</div>
+                                        <div class="excel-cell excel-note">Guest speaker</div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="slide-content">
                                 <div class="anim-el"><span class="section-tag">06 — THE PIPELINE</span></div>
                                 <div class="anim-el">

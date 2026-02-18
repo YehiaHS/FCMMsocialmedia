@@ -1594,17 +1594,19 @@ body * { cursor: none !important; }
     margin: 0.5rem auto 1.5rem;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 9 / 16;
+    max-height: 55vh;
     border: 1.5px solid rgba(0, 164, 255, 0.25);
     box-shadow: 0 0 30px rgba(0, 164, 255, 0.1);
     background: #000;
 }
-.video-embed-zone iframe {
+.video-embed-zone iframe,
+.video-embed-zone video {
     width: 100%;
     height: 100%;
     border: none;
     display: block;
-    transform: scale(1);
+    object-fit: cover;
 }
 
 /* ===== REEL CAROUSEL ===== */
@@ -1636,11 +1638,13 @@ body * { cursor: none !important; }
     min-width: 100%;
     height: 100%;
 }
-.reel-carousel-item iframe {
+.reel-carousel-item iframe,
+.reel-carousel-item video {
     width: 100%;
     height: 100%;
     border: none;
     display: block;
+    object-fit: cover;
 }
 .reel-carousel-btn {
     background: rgba(0,164,255,0.12);
@@ -1733,7 +1737,8 @@ body * { cursor: none !important; }
     min-width: 100%;
     height: 100%;
 }
-.ig-phone-slide iframe {
+.ig-phone-slide iframe,
+.ig-phone-slide img {
     width: 100%;
     height: 100%;
     border: none;
@@ -1825,6 +1830,133 @@ body * { cursor: none !important; }
     transform: translateY(-2px);
 }
 .tech-tag i { color: var(--pp-accent); font-size: 10px; }
+
+/* ===== EXCEL CONTENT CALENDAR (Pipeline BG) ===== */
+.slide[data-index="6"] { position: relative; }
+.excel-calendar {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) perspective(900px) rotateX(8deg) rotateY(-4deg);
+    width: 70%;
+    max-width: 700px;
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0,164,255,0.15);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    animation: excelFadeIn 1.2s ease forwards;
+}
+@keyframes excelFadeIn {
+    from { opacity: 0; transform: translate(-50%, -50%) perspective(900px) rotateX(12deg) rotateY(-6deg) scale(0.92); }
+    to   { opacity: 0.12; transform: translate(-50%, -50%) perspective(900px) rotateX(8deg) rotateY(-4deg) scale(1); }
+}
+.excel-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 10px;
+    background: #1a7a3a;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+}
+.excel-logo { font-size: 13px; }
+.excel-title { flex: 1; }
+.excel-dots { display: flex; gap: 5px; }
+.excel-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+}
+.excel-dots span:last-child { background: #e04040; }
+.excel-ribbon {
+    display: flex; gap: 0; background: #1e8e44;
+    border-bottom: 2px solid #1a7a3a;
+}
+.excel-tab {
+    padding: 4px 14px;
+    color: rgba(255,255,255,0.65);
+    font-size: 10px;
+    font-weight: 500;
+}
+.excel-tab.active {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border-bottom: 2px solid #fff;
+}
+.excel-grid {
+    background: #1a1e26;
+}
+.excel-header-row, .excel-data-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 1.2fr 1.2fr 0.9fr 1.1fr;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.excel-header-row { background: rgba(255,255,255,0.04); }
+.excel-label-row { background: rgba(0,164,255,0.08); }
+.excel-cell {
+    padding: 5px 8px;
+    border-right: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.75);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.excel-row-num {
+    text-align: center;
+    color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.02);
+    font-size: 9px;
+}
+.excel-col-head {
+    text-align: center;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    font-size: 10px;
+}
+.excel-label {
+    font-weight: 600;
+    color: var(--pp-accent);
+}
+.excel-platform i {
+    font-size: 10px;
+    margin-right: 3px;
+    color: var(--pp-accent);
+}
+.excel-status { font-weight: 600; font-size: 10px; }
+.excel-status.done { color: #4ade80; }
+.excel-status.progress { color: #facc15; }
+.excel-status.planned { color: rgba(255,255,255,0.35); }
+.excel-note { color: rgba(255,255,255,0.4); font-style: italic; }
+
+/* Row-by-row typewriter reveal */
+.excel-data-row {
+    opacity: 0;
+    animation: excelRowIn 0.5s ease forwards;
+    animation-delay: calc(0.8s + var(--row-delay) * 0.25s);
+}
+@keyframes excelRowIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scanning highlight bar */
+.excel-calendar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 28px;
+    background: linear-gradient(180deg, rgba(0,164,255,0.08) 0%, transparent 100%);
+    animation: excelScan 4s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes excelScan {
+    0%, 100% { top: 15%; }
+    50% { top: 85%; }
+}
+
+/* Ensure slide content stays above calendar */
+.slide[data-index="6"] .slide-content { position: relative; z-index: 1; }
 
 /* ===== PIPELINE ===== */
 .pipeline-flow {

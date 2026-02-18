@@ -4,6 +4,8 @@
 # Large binary files
 *.mp4
 *.ogg
+# But include compressed media for the presentation
+!media/*.mp4
 
 # Python cache
 __pycache__/
